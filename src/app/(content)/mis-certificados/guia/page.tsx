@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -80,7 +81,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-export default function GuiasIndex() {
+function GuiasIndexContent() {
   return (
     <>
       <style>{`
@@ -139,6 +140,14 @@ export default function GuiasIndex() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function GuiasIndex() {
+  return (
+    <Suspense fallback={null}>
+      <GuiasIndexContent />
+    </Suspense>
   );
 }
 

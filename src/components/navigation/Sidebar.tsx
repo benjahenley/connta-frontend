@@ -90,6 +90,7 @@ export default function Sidebar() {
           const accessible = canAccess(item);
           const parentActive = isParentActive(item);
           const hasChildren = item.children && item.children.length > 0;
+          const children = item.children ?? [];
           const showChildren = !isCollapsed && hasChildren;
 
           return (
@@ -140,7 +141,7 @@ export default function Sidebar() {
                   className={`overflow-hidden transition-all duration-200 ${
                     parentActive ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
                   }`}>
-                  {item.children.map((child) => {
+                  {children.map((child) => {
                     const childAccessible = canAccess(child);
                     return (
                       <div key={child.href} className="pl-5 pr-2">

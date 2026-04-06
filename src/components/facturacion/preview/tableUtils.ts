@@ -49,7 +49,7 @@ export function normalizeEditValue(col: string, value: string): string | number 
   }
   if (col === "alicuotaIva" || PRICE_COLS.has(col)) {
     const parsed = parseDecimalValue(value);
-    if (!isNaN(parsed) && parsed >= 0) return parsed;
+    if (parsed !== null && !isNaN(parsed) && parsed >= 0) return parsed;
   }
   if (col === "docTipo") {
     const parsed = Number(value);

@@ -17,8 +17,10 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const tierParam = searchParams.get("plan")?.toUpperCase() as SubscriptionTier | null;
+  const isPaidTier = (tier: string | null | undefined): tier is SubscriptionTier =>
+    !!tier && PAID_TIERS.includes(tier as SubscriptionTier);
   const plan = PLANS.find(
-    (p) => p.id === tierParam && PAID_TIERS.includes(p.id) && p.mpCheckoutUrl
+    (p) => p.id === tierParam && isPaidTier(p.id) && p.mpCheckoutUrl
   );
 
   if (!plan || !plan.mpCheckoutUrl) {

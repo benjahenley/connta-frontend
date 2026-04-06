@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { RequirePermission } from "@/components/providers/AuthProvider";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { adminApi, type AdminUser, type SubscriptionHistoryEntry } from "@/services/admin";
@@ -49,7 +49,7 @@ const PAGE_SIZE = 15;
 
 /* ── Component ─────────────────────────────────────────────── */
 
-export default function AdminUsuarios() {
+function AdminUsuariosContent() {
   const { user: currentUser } = useAuth();
 
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -101,11 +101,11 @@ export default function AdminUsuarios() {
   }, [fetchUsers]);
 
   // Debounced search
-  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleSearch = (value: string) => {
     setSearch(value);
     setPage(1);
-    clearTimeout(searchTimeout.current);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
       // fetchUsers is triggered by the dependency change
     }, 300);
@@ -153,7 +153,9 @@ export default function AdminUsuarios() {
       u.id,
       `role-${role}`,
       `Cambiar rol de "${u.name}" a ${role}?`,
-      () => adminApi.updateRole(u.id, role),
+      async () => {
+        await adminApi.updateRole(u.id, role);
+      },
     );
   };
 
@@ -162,7 +164,14 @@ export default function AdminUsuarios() {
       u.id,
       `tier-${tier}`,
       `Cambiar plan de "${u.name}" a ${tier}?`,
-      () => adminApi.updateSubscription(u.id, tier, u.subscriptionStatus, "admin_manual"),
+      async () => {
+        await adminApi.updateSubscription(
+          u.id,
+          tier,
+          u.subscriptionStatus,
+          "admin_manual",
+        );
+      },
     );
   };
 
@@ -171,8 +180,14 @@ export default function AdminUsuarios() {
       u.id,
       `status-${status}`,
       `Cambiar estado de "${u.name}" a ${status}?`,
-      () =>
-        adminApi.updateSubscription(u.id, u.subscriptionTier, status, "admin_manual"),
+      async () => {
+        await adminApi.updateSubscription(
+          u.id,
+          u.subscriptionTier,
+          status,
+          "admin_manual",
+        );
+      },
     );
   };
 
@@ -768,5 +783,13 @@ export default function AdminUsuarios() {
         )}
       </div>
     </RequirePermission>
+  );
+}
+
+export default function AdminUsuarios() {
+  return (
+    <Suspense fallback={null}>
+      <AdminUsuariosContent />
+    </Suspense>
   );
 }

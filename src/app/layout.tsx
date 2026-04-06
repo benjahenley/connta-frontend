@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
@@ -25,7 +26,9 @@ export default function RootLayout({
     <html lang="es">
       <body className={inter.className}>
         <AuthProvider>
-          <RouteScrollManager />
+          <Suspense fallback={null}>
+            <RouteScrollManager />
+          </Suspense>
           {children}
         </AuthProvider>
       </body>
