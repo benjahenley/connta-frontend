@@ -751,7 +751,7 @@ export default function SignUpPage() {
                 </div>
                 <form onSubmit={handleComplete} className="space-y-4">
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-start justify-between gap-3">
                       <label
                         className="block text-sm font-semibold"
                         style={{ color: "#374151" }}>
@@ -759,7 +759,7 @@ export default function SignUpPage() {
                           <Lock className="h-3.5 w-3.5" /> Contraseña
                         </span>
                       </label>
-                      <div className="flex items-center gap-2">
+                      <div className="hidden sm:flex items-center gap-2">
                         <button
                           type="button"
                           onClick={handleGeneratePassword}
@@ -806,6 +806,25 @@ export default function SignUpPage() {
                         ) : (
                           <Copy className="h-4 w-4" />
                         )}
+                      </button>
+                    </div>
+                    <div className="flex sm:hidden items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleGeneratePassword}
+                        className="helper-btn">
+                        <RefreshCw className="h-3.5 w-3.5" /> Generar segura
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords((current) => !current)}
+                        className="helper-btn secondary">
+                        {showPasswords ? (
+                          <EyeOff className="h-3.5 w-3.5" />
+                        ) : (
+                          <Eye className="h-3.5 w-3.5" />
+                        )}
+                        {showPasswords ? "Ocultar" : "Mostrar"}
                       </button>
                     </div>
                     <p className="password-hint">
