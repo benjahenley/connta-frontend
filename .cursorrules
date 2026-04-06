@@ -1,0 +1,14 @@
+# .cursorrules
+
+# Reglas de diseño para Gamma AFIP Flujos
+
+- Solo se permite usar colores definidos en tailwind.config.js (paleta violeta, grises, blancos, lavanda/acento).
+- No agregar nuevas clases Tailwind sin revisar si ya existe un equivalente en el diseño base.
+- Tipografía principal: Inter, fallback sans-serif.
+- Espaciado generoso, preferir multiples de 4px.
+- No usar bordes pesados, preferir separación por espacio y color.
+- Animaciones solo sutiles y cuando agregan valor (no decorativas).
+- Todos los componentes deben ser extraídos y reutilizables.
+- El diseño debe poder escalar sin romper el layout general.
+- Revisar consistencia de tamaños y pesos tipográficos.
+- No usar sombras fuertes, solo boxShadow.soft.

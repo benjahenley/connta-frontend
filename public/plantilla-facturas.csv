@@ -1,0 +1,8 @@
+PtoVta,CbteTipo,Concepto,DocTipo,DocNro,RazonSocial,CondicionIvaReceptorId,ImpNeto,ImpIVA,ImpOpEx,ImpTotal,CbteFch,FchServDesde,FchServHasta,FchVtoPago
+1,Factura A,Productos,80,20-12345678-9,Empresa Ejemplo SA,1,$10.000,2100,0,12100,15/03/2026,,,
+1,FB,Servicios,80,27345678901,Juan Pérez,6,5000.50,$1.050,0,6050.50,2026-03-15,01/03/2026,31/03/2026,15/04/2026
+1,11,Productos y Servicios,96,33445566,María García,5,"2.500,00",0,0,"2.500,00",Mar-26,20260301,20260331,20260415
+1,Nota Credito A,Prod,80,20-98765432-1,Comercial López SRL,1,$3.000,630,0,3630,20260315,,,
+1,1,Serv,80,30-11223344-5,Servicios del Norte SA,1,"$8.000,00","$1.680,00",0,"$9.680,00",15/03,2026-03-01,2026-03-31,2026-04-15
+1,NCA,2,80,20567890123,Roberto Sánchez,6,1500,315,0,1815,15-Mar,Mar-26,Mar-26,15/04/2026
+1,Factura C,Bienes,96,44556677,Ana Rodríguez,5,4200,0,0,4200,2026/03/15,,,

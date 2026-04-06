@@ -1,0 +1,137 @@
+.sora {
+  font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+}
+
+.condensed {
+  font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim {
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.a1 {
+  animation-delay: 0.05s;
+}
+
+.a2 {
+  animation-delay: 0.13s;
+}
+
+.a3 {
+  animation-delay: 0.21s;
+}
+
+.a4 {
+  animation-delay: 0.29s;
+}
+
+.a5 {
+  animation-delay: 0.37s;
+}
+
+.historyItem {
+  opacity: 0;
+  animation: fadeUp 0.45s ease forwards;
+}
+
+@keyframes dashScroll {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.dashIdle {
+  stroke: #d1d5db;
+  transition: stroke 0.25s ease;
+}
+
+.dashActive {
+  stroke: #27a0c9;
+  animation: dashScroll 0.7s linear infinite;
+}
+
+@keyframes zonePulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.zoneGlow {
+  animation: zonePulse 2.8s ease infinite;
+}
+
+.zone {
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.zone:hover {
+  background: #f8faff;
+}
+
+.zoneActive {
+  background: rgba(39, 160, 201, 0.04);
+  transform: scale(1.005);
+}
+
+.row {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.row:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  transform: translateY(-1px);
+}
+
+.certCard {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.certCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.certCardSelected {
+  border-color: #27a0c9 !important;
+  box-shadow: 0 0 0 3px rgba(39, 160, 201, 0.15), 0 4px 16px rgba(39, 160, 201, 0.1);
+}
+
+.envTab {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.envTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.2s ease;
+  border-radius: 1px;
+}
+
+.envTabActive::after {
+  background: #27a0c9;
+}

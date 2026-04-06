@@ -1,0 +1,393 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+* {
+  box-sizing: border-box;
+}
+
+@theme inline {
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+body {
+  background-color: #fafbfc;
+  color: #2c3e50;
+}
+
+@theme {
+  /* Primary Colors - Blue-focused palette */
+  --color-primary: #27a0c9; /* Vibrant Blue - main brand color */
+  --color-secondary: #5bb3d4; /* Light Blue - lighter variation */
+  --color-tertiary: #1e7a9c; /* Deep Blue - deeper shade */
+  --color-quaternary: #155a75; /* Dark Blue - darkest shade */
+
+  /* Accent Colors */
+  --color-accent: #7dd3fc; /* Light Sky Blue - for highlights */
+  --color-light: #f0f9ff; /* Very light blue background */
+
+  /* Semantic Colors */
+  --color-success: #10b981; /* Green */
+  --color-warning: #f59e0b; /* Amber */
+  --color-error: #ef4444; /* Red */
+  --color-info: #3b82f6; /* Blue */
+
+  /* Neutral Colors */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+}
+
+/* Custom utility classes for your brand colors */
+.bg-brand-primary {
+  background-color: var(--color-primary);
+}
+.bg-brand-secondary {
+  background-color: var(--color-secondary);
+}
+.bg-brand-tertiary {
+  background-color: var(--color-tertiary);
+}
+.bg-brand-quaternary {
+  background-color: var(--color-quaternary);
+}
+
+.text-brand-primary {
+  color: var(--color-primary);
+}
+.text-brand-secondary {
+  color: var(--color-secondary);
+}
+.text-brand-tertiary {
+  color: var(--color-tertiary);
+}
+.text-brand-quaternary {
+  color: var(--color-quaternary);
+}
+
+.border-brand-primary {
+  border-color: var(--color-primary);
+}
+.border-brand-secondary {
+  border-color: var(--color-secondary);
+}
+
+/* Enhanced button styles with your brand colors */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-tertiary);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* Loading spinner with brand colors */
+.spinner-brand {
+  border-color: var(--color-secondary);
+  border-top-color: var(--color-primary);
+}
+
+/* 3D cube loader */
+.loader-3d {
+  --s: 18px;
+  --_d: calc(0.353 * var(--s));
+  width: calc(var(--s) + var(--_d));
+  aspect-ratio: 1;
+  display: grid;
+}
+.loader-3d::before,
+.loader-3d::after {
+  content: "";
+  grid-area: 1/1;
+  clip-path: polygon(
+    var(--_d) 0,
+    100% 0,
+    100% calc(100% - var(--_d)),
+    calc(100% - var(--_d)) 100%,
+    0 100%,
+    0 var(--_d)
+  );
+  background: conic-gradient(
+    from -90deg at calc(100% - var(--_d)) var(--_d),
+    #e0f4fb 135deg,
+    #1a8aad 0 270deg,
+    #27a0c9 0
+  );
+  animation: loader3d 2s infinite;
+}
+.loader-3d::after {
+  animation-delay: -1s;
+}
+@keyframes loader3d {
+  0%   { transform: translate(0, 0) }
+  25%  { transform: translate(30px, 0) }
+  50%  { transform: translate(30px, 30px) }
+  75%  { transform: translate(0, 30px) }
+  100% { transform: translate(0, 0) }
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.db-condensed {
+  font-family: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+}
+.db-sora {
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes dbFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.db-anim {
+  opacity: 0;
+  animation: dbFadeUp 0.5s ease forwards;
+}
+.db-anim-1 {
+  animation-delay: 0.05s;
+}
+.db-anim-2 {
+  animation-delay: 0.13s;
+}
+.db-anim-3 {
+  animation-delay: 0.21s;
+}
+.db-anim-4 {
+  animation-delay: 0.29s;
+}
+.db-anim-5 {
+  animation-delay: 0.37s;
+}
+
+.db-module-card {
+  transition:
+    box-shadow 0.22s ease,
+    transform 0.22s ease,
+    border-color 0.22s ease;
+  cursor: pointer;
+}
+.db-module-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(39, 160, 201, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  border-color: #27a0c9 !important;
+}
+.db-module-card:hover .db-arrow {
+  color: #27a0c9;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #27a0c9 #dbe7ee;
+}
+
+/* Scale UI proportionally on large screens — mirrors browser zoom behavior */
+@media (min-width: 1536px) {
+  html {
+    font-size: 112.5%; /* 18px — feels like ~110% zoom */
+  }
+}
+@media (min-width: 1920px) {
+  html {
+    font-size: 125%; /* 20px — feels like 125% zoom on a large monitor */
+  }
+}
+
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #27a0c9 #dbe7ee;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  background: #dbe7ee;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  background: #27a0c9;
+  border: 2px solid #dbe7ee;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover {
+  background: #1e7a9c;
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+  background: #dbe7ee;
+}
+
+/* Flash animation for restored rows in preview table */
+@keyframes flashRestore {
+  0% {
+    background-color: rgba(16, 185, 129, 0.18);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.animate-flash-restore > td {
+  animation: flashRestore 1.2s ease-out;
+}
