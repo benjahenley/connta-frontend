@@ -1,20 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase-middleware";
-
-const PUBLIC_ROUTES = new Set([
-  "/",
-  "/contacto",
-  "/funcionalidades",
-  "/pricing",
-  "/auth/sign-in",
-  "/auth/sign-up",
-  "/auth/forgot-password",
-  "/auth/reset-password",
-]);
-
-function isPublic(pathname: string) {
-  return PUBLIC_ROUTES.has(pathname) || pathname.startsWith("/auth/");
-}
+import { isPublicRoute } from "@/lib/routes";
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createMiddlewareClient(request);
@@ -24,19 +10,33 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const hasVerifiedSession = !!user?.email_confirmed_at;
 
   // Authenticated user visiting auth pages → redirect to dashboard
   // Exception: /auth/sign-up is allowed through — the user may be mid-registration
   // (OTP confirmed but password not yet set). The sign-up page handles this itself.
-  if (user && pathname.startsWith("/auth/") && pathname !== "/auth/sign-up") {
+  if (
+    hasVerifiedSession &&
+    pathname.startsWith("/auth/") &&
+    pathname !== "/auth/sign-up"
+  ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
+  // Unverified signup/session should never access protected routes.
+  if (user && !hasVerifiedSession && !isPublicRoute(pathname)) {
+    return NextResponse.redirect(new URL("/auth/sign-up", request.url));
+  }
+
   // Unauthenticated user visiting a protected route → redirect to sign-in
-  if (!user && !isPublic(pathname)) {
+  if (!hasVerifiedSession && !user && !isPublicRoute(pathname)) {
     const signInUrl = new URL("/auth/sign-in", request.url);
     signInUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(signInUrl);
+  }
+
+  if (!hasVerifiedSession && !isPublicRoute(pathname)) {
+    return NextResponse.redirect(new URL("/auth/sign-up", request.url));
   }
 
   return response;

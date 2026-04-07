@@ -91,7 +91,14 @@ export function CustomDateInput({
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node | null;
-      if (rootRef.current && target && !rootRef.current.contains(target)) {
+      const clickedTrigger = rootRef.current && target
+        ? rootRef.current.contains(target)
+        : false;
+      const clickedPopup = popupRef.current && target
+        ? popupRef.current.contains(target)
+        : false;
+
+      if (!clickedTrigger && !clickedPopup) {
         setOpen(false);
       }
     };
@@ -158,7 +165,7 @@ export function CustomDateInput({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-9 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition hover:border-gray-300 focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200">
+        className="flex h-11 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition hover:border-gray-300 focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200">
         <span className={value ? "text-gray-900" : "text-gray-300"}>
           {formatDisplayDate(value) || placeholder}
         </span>
@@ -175,6 +182,7 @@ export function CustomDateInput({
         createPortal(
           <div
             ref={popupRef}
+            data-calendar-popup="true"
             className="fixed z-[1200] w-[280px] rounded-2xl border border-gray-200 bg-white p-3 shadow-[0_18px_40px_rgba(15,23,42,0.12)]"
             style={{
               top: position?.top ?? -9999,

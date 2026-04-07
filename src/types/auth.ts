@@ -1,23 +1,23 @@
 // Subscription tiers matching backend
 export enum SubscriptionTier {
-  FREE = 'FREE',
-  STARTER = 'STARTER',
-  PROFESSIONAL = 'PROFESSIONAL',
-  BUSINESS = 'BUSINESS',
+  FREE = "FREE",
+  STARTER = "STARTER",
+  PROFESSIONAL = "PROFESSIONAL",
+  BUSINESS = "BUSINESS",
 }
 
 // Subscription status
 export enum SubscriptionStatus {
-  INACTIVE = 'INACTIVE',
-  ACTIVE = 'ACTIVE',
-  CANCELLED = 'CANCELLED',
-  PAST_DUE = 'PAST_DUE',
+  INACTIVE = "INACTIVE",
+  ACTIVE = "ACTIVE",
+  CANCELLED = "CANCELLED",
+  PAST_DUE = "PAST_DUE",
 }
 
 // Environment types
 export enum Environment {
-  DEV = 'DEV',
-  PROD = 'PROD',
+  DEV = "DEV",
+  PROD = "PROD",
 }
 
 // Auth user interface
@@ -61,13 +61,13 @@ export interface UsageStats {
   usage: {
     dev: {
       current: number;
-      limit: number | 'unlimited';
-      remaining: number | 'unlimited';
+      limit: number | "unlimited";
+      remaining: number | "unlimited";
     };
     prod: {
       current: number;
-      limit: number | 'unlimited' | 'not_allowed';
-      remaining: number | 'unlimited' | 'not_allowed';
+      limit: number | "unlimited" | "not_allowed";
+      remaining: number | "unlimited" | "not_allowed";
     };
   };
 }
@@ -78,8 +78,8 @@ export interface UsageCheck {
   reason?: string;
   usage?: {
     current: number;
-    limit: number | 'unlimited';
-    remaining: number | 'unlimited';
+    limit: number | "unlimited";
+    remaining: number | "unlimited";
     percentageUsed: number;
   };
 }
@@ -121,66 +121,66 @@ export const SUBSCRIPTION_TIERS: Record<
   }
 > = {
   [SubscriptionTier.FREE]: {
-    name: 'Free',
+    name: "Free",
     price: 0,
-    currency: 'ARS',
-    description: 'Perfect for testing',
+    currency: "ARS",
+    description: "Perfect for testing",
     maxInvoices: 5,
     maxCertificates: 1,
     features: [
-      '5 invoices per month',
-      '1 certificado (CUIT)',
-      'TEST environment only',
-      'Basic invoice generation',
-      'Community support',
+      "5 invoices per month",
+      "1 certificado (CUIT)",
+      "TEST environment only",
+      "Basic invoice generation",
+      "Community support",
     ],
   },
   [SubscriptionTier.STARTER]: {
-    name: 'Starter',
+    name: "Starter",
     price: 15000,
-    currency: 'ARS',
-    description: 'For small businesses',
+    currency: "ARS",
+    description: "For small businesses",
     maxInvoices: 50,
     maxCertificates: 1,
     recommended: true,
     features: [
-      '50 invoices per month',
-      '1 certificado (CUIT)',
-      'Production environment access',
-      'Excel upload',
-      'Email support',
+      "50 invoices per month",
+      "1 certificado (CUIT)",
+      "Production environment access",
+      "Excel upload",
+      "Email support",
     ],
   },
   [SubscriptionTier.PROFESSIONAL]: {
-    name: 'Professional',
+    name: "Professional",
     price: 35000,
-    currency: 'ARS',
-    description: 'For growing companies',
+    currency: "ARS",
+    description: "For growing companies",
     maxInvoices: 200,
     maxCertificates: 5,
     features: [
-      '200 invoices per month',
-      'Hasta 5 certificados (CUITs)',
-      'Production environment access',
-      'Batch processing',
-      'Email notifications',
-      'Priority support',
+      "200 invoices per month",
+      "Hasta 5 certificados (CUITs)",
+      "Production environment access",
+      "Batch processing",
+      "Email notifications",
+      "Priority support",
     ],
   },
   [SubscriptionTier.BUSINESS]: {
-    name: 'Business',
+    name: "Business",
     price: 75000,
-    currency: 'ARS',
-    description: 'For large operations',
+    currency: "ARS",
+    description: "For large operations",
     maxInvoices: 1000,
     maxCertificates: null,
     features: [
-      '1.000 facturas / mes',
-      'Certificados ilimitados',
-      'Production environment access',
-      'Multi-CUIT',
-      'Priority support',
-      'API access',
+      "500 facturas / mes",
+      "Certificados ilimitados",
+      "Production environment access",
+      "Multi-CUIT",
+      "Priority support",
+      "API access",
     ],
   },
 };

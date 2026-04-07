@@ -4,6 +4,7 @@ import { forwardRef, useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 import { COL_LABELS, DROPDOWN_COLS, DATE_COLS } from "@/app/(content)/facturacion/preview/constants";
+import { CustomDateInput } from "./CustomDateInput";
 
 interface BulkEditPopoverProps {
   col: string;
@@ -93,21 +94,22 @@ export const BulkEditPopover = forwardRef<HTMLDivElement, BulkEditPopoverProps>(
                       onClick={onMenuToggle}
                       className="flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm text-gray-700 transition-colors"
                       style={{ borderColor: "#dbe7ee", background: "white" }}>
-                      <span className={value ? "text-gray-700" : "text-gray-400"}>
+                      <span
+                        className={`min-w-0 truncate ${value ? "text-gray-700" : "text-gray-400"}`}>
                         {opts.find((o) => o.value === value)?.label ?? "Seleccioná un valor"}
                       </span>
-                      <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`ml-2 h-4 w-4 shrink-0 text-gray-400 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
                     </button>
                     {menuOpen && (
                       <div
-                        className="absolute left-0 right-0 top-full z-[1200] mt-2 h-[128px] overflow-y-auto rounded-xl border bg-white shadow-lg"
+                        className="absolute left-0 right-0 top-full z-[1200] mt-2 max-h-48 overflow-y-auto rounded-xl border bg-white py-1 shadow-lg"
                         style={{ borderColor: "#dbe7ee" }}>
                         {opts.map((option) => (
                           <button
                             key={option.value}
                             type="button"
                             onClick={() => onMenuSelect(option.value)}
-                            className={`flex w-full items-center px-3 py-2 text-left text-xs transition-colors hover:bg-sky-50 ${
+                            className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-sky-50 ${
                               value === option.value ? "text-sky-700 bg-sky-50" : "text-gray-700"
                             }`}>
                             {option.label}
@@ -117,17 +119,10 @@ export const BulkEditPopover = forwardRef<HTMLDivElement, BulkEditPopoverProps>(
                     )}
                   </div>
                 ) : isDate ? (
-                  <input
-                    autoFocus
-                    type="date"
+                  <CustomDateInput
                     value={value}
-                    onChange={(e) => onValueChange(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") onApply();
-                      if (e.key === "Escape") { onCancel(); e.stopPropagation(); }
-                    }}
-                    className="min-w-0 flex-1 rounded-xl border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                    style={{ borderColor: "#dbe7ee" }}
+                    placeholder="Seleccionar fecha"
+                    onChange={onValueChange}
                   />
                 ) : (
                   <input

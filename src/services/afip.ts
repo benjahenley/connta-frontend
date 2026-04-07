@@ -17,6 +17,7 @@ export interface ScanExcelPayload {
   file: File;
   cuit: string;
   environment: "DEV" | "PROD";
+  certRecordId?: string;
 }
 
 export interface CertData {
@@ -57,6 +58,11 @@ export interface ScannedInvoice {
   }>;
   hasErrors?: boolean;
   autoFilledFields?: string[];
+}
+
+export interface ScanExcelResponse {
+  totalFound: number;
+  uploadSessionId: string | null;
 }
 
 export interface UploadSessionSummary {
@@ -103,6 +109,29 @@ export interface UploadSessionDetail extends UploadSessionSummary {
     autoFilledFields?: string | null;
     hasErrors?: boolean;
   }>;
+}
+
+export interface UpdatedInvoicePayload {
+  id: string;
+  ptoVta: number | null;
+  cbteTipo: number | null;
+  concepto: number | null;
+  docTipo: number | null;
+  docNro: number | null;
+  domicilioReceptor?: string | null;
+  condicionIvaReceptorId?: number | null;
+  impNeto: number | null;
+  impIva: number | null;
+  impOpEx: number | null;
+  impTotal: number | null;
+  cbteFch: string | null;
+  fchServDesde?: string | null;
+  fchServHasta?: string | null;
+  fchVtoPago?: string | null;
+  razonSocial: string | null;
+  descripcion?: string | null;
+  validationIssues?: string | null;
+  autoFilledFields?: string | null;
 }
 
 export interface CertAuthorization {
@@ -173,16 +202,14 @@ class AfipApi {
     file,
     cuit,
     environment,
-  }: ScanExcelPayload): Promise<{
-    invoices: ScannedInvoice[];
-    totalFound: number;
-    uploadSessionId: string | null;
-  }> {
+    certRecordId,
+  }: ScanExcelPayload): Promise<ScanExcelResponse> {
     const token = await getToken();
     const formData = new FormData();
     formData.append("file", file);
     formData.append("cuit", cuit);
     formData.append("environment", environment);
+    if (certRecordId) formData.append("certRecordId", certRecordId);
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/afip/scan-excel`,
@@ -397,7 +424,7 @@ class AfipApi {
   async updateInvoices(
     uploadSessionId: string,
     invoices: Array<{ id: string; [key: string]: unknown }>,
-  ): Promise<{ updated: number }> {
+  ): Promise<{ updated: number; invoices: UpdatedInvoicePayload[] }> {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/afip/uploads/${uploadSessionId}/invoices`,
       {
@@ -410,6 +437,32 @@ class AfipApi {
       const err = await res.json().catch(() => ({}));
       throw new Error(err?.message || "Error al guardar cambios");
     }
+    return res.json();
+  }
+
+  async resolveAddresses(
+    uploadSessionId: string,
+  ): Promise<{
+    resolved: number;
+    total: number;
+    attempted?: number;
+    failed?: number;
+    sampleErrors?: string[];
+  }> {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/uploads/${uploadSessionId}/resolve-addresses`,
+      {
+        method: "POST",
+        headers: await authHeaders(),
+      },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(
+        err?.message || "Error al resolver direcciones fiscales",
+      );
+    }
+    globalMutate(KEYS.uploadDetail(uploadSessionId));
     return res.json();
   }
 

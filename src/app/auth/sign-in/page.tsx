@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth";
+import { authService, BackendUnavailableError } from "@/services/auth";
 import Image from "next/image";
 import Link from "next/link";
+
+function getApiBaseUrl() {
+  return process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ?? "";
+}
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -18,18 +22,38 @@ export default function SignInPage() {
     setError("");
     try {
       const { access_token } = await authService.signIn(formData.email, formData.password);
+      const apiUrl = getApiBaseUrl();
+
+      if (!apiUrl) {
+        throw new BackendUnavailableError(
+          "El backend no esta disponible en este momento. Intenta nuevamente en unos minutos.",
+        );
+      }
 
       // Verify the user exists in the backend DB before navigating
-      const meRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-        { headers: { Authorization: `Bearer ${access_token}` } },
-      );
+      let meRes: Response;
+      try {
+        meRes = await fetch(`${apiUrl}/auth/me`, {
+          headers: { Authorization: `Bearer ${access_token}` },
+        });
+      } catch {
+        throw new BackendUnavailableError(
+          "El backend no esta disponible en este momento. Intenta nuevamente en unos minutos.",
+        );
+      }
 
       if (!meRes.ok) {
-        // User exists in Supabase but not in our DB — sign them out
         await authService.signOut();
+
+        if (meRes.status === 401) {
+          setError(
+            "Tu cuenta no esta registrada en el sistema. Por favor, registrate nuevamente.",
+          );
+          return;
+        }
+
         setError(
-          "Tu cuenta no está registrada en el sistema. Por favor, registrate nuevamente.",
+          "El backend no esta disponible en este momento. Intenta nuevamente en unos minutos.",
         );
         return;
       }

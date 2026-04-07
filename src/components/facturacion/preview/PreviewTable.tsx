@@ -24,6 +24,7 @@ interface PreviewTableProps {
   columns: string[];
   sticky?: boolean;
   hasServiceRows: boolean;
+  isResolvingAddresses?: boolean;
   restoredIds?: Set<string>;
   rowTones?: Map<string, "error" | "warning">;
   onCellEdit: (rowIdx: number, col: string, value: string | number) => void;
@@ -38,6 +39,7 @@ export function PreviewTable({
   columns,
   sticky = false,
   hasServiceRows,
+  isResolvingAddresses = false,
   restoredIds,
   rowTones,
   onCellEdit,
@@ -122,6 +124,10 @@ export function PreviewTable({
     if (!bulkEditColumn) return;
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node | null;
+      const elementTarget = target instanceof Element ? target : null;
+      if (elementTarget?.closest('[data-calendar-popup="true"]')) {
+        return;
+      }
       if (bulkEditRef.current && target && !bulkEditRef.current.contains(target)) {
         setBulkEditColumn(null);
       }
@@ -191,6 +197,7 @@ export function PreviewTable({
             origRow={originalById.get(String(row._id ?? ""))}
             isRestored={!!restoredIds?.has(String(row._id ?? ""))}
             tone={rowTones?.get(String(row._id ?? ""))}
+            isResolvingAddresses={isResolvingAddresses}
             editCell={editCell}
             editValue={editValue}
             onStartEdit={startEdit}

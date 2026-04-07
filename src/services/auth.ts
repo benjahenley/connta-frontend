@@ -12,6 +12,17 @@ import type {
 
 export type { AuthUser } from "@/types/auth";
 
+export class BackendUnavailableError extends Error {
+  constructor(message = "BACKEND_UNAVAILABLE") {
+    super(message);
+    this.name = "BackendUnavailableError";
+  }
+}
+
+function getApiBaseUrl() {
+  return process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ?? "";
+}
+
 class AuthService {
   // Sign in with Supabase Auth
   async signIn(
@@ -29,12 +40,12 @@ class AuthService {
       }
 
       if (!data.user) {
-        throw new Error("Sign in failed");
+        throw new Error("No se pudo iniciar sesion");
       }
 
       // Check if email is verified
       if (!data.user.email_confirmed_at) {
-        throw new Error("Please verify your email first");
+        throw new Error("Por favor, verifica tu email primero");
       }
 
       const user: AuthUser = {
@@ -53,7 +64,7 @@ class AuthService {
       };
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Sign in failed"
+        error instanceof Error ? error.message : "No se pudo iniciar sesion"
       );
     }
   }
@@ -78,6 +89,10 @@ class AuthService {
         return null;
       }
 
+      if (!user.email_confirmed_at) {
+        return null;
+      }
+
       const base: AuthUser = {
         id: user.id,
         email: user.email!,
@@ -92,10 +107,14 @@ class AuthService {
       try {
         const token = await this.getToken();
         if (token) {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
+          const apiUrl = getApiBaseUrl();
+          if (!apiUrl) {
+            throw new BackendUnavailableError();
+          }
+
+          const res = await fetch(`${apiUrl}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
           if (res.ok) {
             const backendUser = await res.json();
             base.subscriptionTier = backendUser.subscriptionTier;
@@ -107,14 +126,22 @@ class AuthService {
           } else if (res.status === 401) {
             // Backend rejected — user not registered in DB
             return null;
+          } else {
+            throw new BackendUnavailableError();
           }
         }
-      } catch {
-        // Backend unavailable — fall back to Supabase-only data
+      } catch (error) {
+        if (error instanceof BackendUnavailableError) {
+          throw error;
+        }
+        throw new BackendUnavailableError();
       }
 
       return base;
-    } catch {
+    } catch (error) {
+      if (error instanceof BackendUnavailableError) {
+        throw error;
+      }
       return null;
     }
   }
@@ -146,7 +173,7 @@ class AuthService {
 
   // Step 1: send OTP to email (creates user if not exists)
   async sendOtp(email: string): Promise<void> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = getApiBaseUrl();
     if (apiUrl) {
       const res = await fetch(`${apiUrl}/user/exists/email/${encodeURIComponent(email)}`);
       if (res.ok) {
@@ -189,8 +216,8 @@ class AuthService {
     const authUser = updateData.user;
     if (!authUser) throw new Error("No se pudo actualizar el usuario");
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) throw new Error("API URL not configured (NEXT_PUBLIC_API_URL)");
+    const apiUrl = getApiBaseUrl();
+    if (!apiUrl) throw new Error("La URL de la API no esta configurada");
 
     const response = await fetch(`${apiUrl}/user/create`, {
       method: "POST",
@@ -232,10 +259,12 @@ class AuthService {
         throw new Error(error.message);
       }
 
-      return { message: "Confirmation email sent successfully" };
+      return { message: "Email de confirmacion enviado correctamente" };
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Failed to resend confirmation"
+        error instanceof Error
+          ? error.message
+          : "No se pudo reenviar la confirmacion"
       );
     }
   }
@@ -255,7 +284,7 @@ class AuthService {
   // Listen to auth state changes
   onAuthStateChange(callback: (user: AuthUser | null) => void) {
     return supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
+      if (session?.user?.email_confirmed_at) {
         const user: AuthUser = {
           id: session.user.id,
           email: session.user.email!,
@@ -280,13 +309,14 @@ class AuthService {
       const token = await this.getToken();
       if (!token) {
         console.error("❌ No token found for upgrade");
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       console.log("🔑 Got token for upgrade, making API call...");
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/upgrade-to-customer`,
+        
         {
           method: "POST",
           headers: {
@@ -301,7 +331,7 @@ class AuthService {
       if (!response.ok) {
         const error = await response.json();
         console.error("❌ API Error:", error);
-        throw new Error(error.message || "Upgrade failed");
+        throw new Error(error.message || "No se pudo actualizar la cuenta");
       }
 
       const result = await response.json();
@@ -310,7 +340,9 @@ class AuthService {
     } catch (error) {
       console.error("❌ Full upgrade error:", error);
       throw new Error(
-        error instanceof Error ? error.message : "Upgrade failed"
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar la cuenta"
       );
     }
   }
@@ -324,11 +356,11 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/subscription/info`,
+        `${getApiBaseUrl()}/auth/subscription/info`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -337,7 +369,7 @@ class AuthService {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch subscription info");
+        throw new Error("No se pudo obtener la informacion de la suscripcion");
       }
 
       return await response.json();
@@ -345,7 +377,7 @@ class AuthService {
       throw new Error(
         error instanceof Error
           ? error.message
-          : "Failed to fetch subscription info"
+          : "No se pudo obtener la informacion de la suscripcion"
       );
     }
   }
@@ -357,7 +389,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -370,7 +402,7 @@ class AuthService {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch subscription history");
+        throw new Error("No se pudo obtener el historial de suscripcion");
       }
 
       return await response.json();
@@ -378,7 +410,7 @@ class AuthService {
       throw new Error(
         error instanceof Error
           ? error.message
-          : "Failed to fetch subscription history"
+          : "No se pudo obtener el historial de suscripcion"
       );
     }
   }
@@ -393,7 +425,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -410,7 +442,9 @@ class AuthService {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update subscription");
+        throw new Error(
+          error.message || "No se pudo actualizar la suscripcion"
+        );
       }
 
       return await response.json();
@@ -418,7 +452,7 @@ class AuthService {
       throw new Error(
         error instanceof Error
           ? error.message
-          : "Failed to update subscription"
+          : "No se pudo actualizar la suscripcion"
       );
     }
   }
@@ -434,7 +468,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -451,13 +485,15 @@ class AuthService {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to switch environment");
+        throw new Error(error.message || "No se pudo cambiar el entorno");
       }
 
       return await response.json();
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Failed to switch environment"
+        error instanceof Error
+          ? error.message
+          : "No se pudo cambiar el entorno"
       );
     }
   }
@@ -469,7 +505,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -482,7 +518,7 @@ class AuthService {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch current environment");
+        throw new Error("No se pudo obtener el entorno actual");
       }
 
       return await response.json();
@@ -490,7 +526,7 @@ class AuthService {
       throw new Error(
         error instanceof Error
           ? error.message
-          : "Failed to fetch current environment"
+          : "No se pudo obtener el entorno actual"
       );
     }
   }
@@ -504,7 +540,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -517,13 +553,15 @@ class AuthService {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch usage stats");
+        throw new Error("No se pudieron obtener las estadisticas de uso");
       }
 
       return await response.json();
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Failed to fetch usage stats"
+        error instanceof Error
+          ? error.message
+          : "No se pudieron obtener las estadisticas de uso"
       );
     }
   }
@@ -535,7 +573,7 @@ class AuthService {
     try {
       const token = await this.getToken();
       if (!token) {
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       }
 
       const response = await fetch(
@@ -548,13 +586,13 @@ class AuthService {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to check usage");
+        throw new Error("No se pudo verificar el uso");
       }
 
       return await response.json();
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Failed to check usage"
+        error instanceof Error ? error.message : "No se pudo verificar el uso"
       );
     }
   }

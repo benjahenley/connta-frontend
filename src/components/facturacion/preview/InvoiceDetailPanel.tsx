@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, X } from "lucide-react";
 import type { InvoiceRow } from "@/app/(content)/facturacion/preview/constants";
 import {
@@ -8,9 +8,11 @@ import {
   DATE_COLS,
   DROPDOWN_COLS,
   EXPECTED_COLS,
+  PRICE_COLS,
 } from "@/app/(content)/facturacion/preview/constants";
 import { formatCellValue } from "@/app/(content)/facturacion/preview/formatters";
 import { CustomDateInput } from "@/components/facturacion/preview/CustomDateInput";
+import { parseDecimalValue } from "@/components/facturacion/preview/tableUtils";
 
 interface InvoiceDetailPanelProps {
   row: InvoiceRow;
@@ -51,6 +53,24 @@ function fieldValue(row: InvoiceRow, field: string): string {
   return String(raw);
 }
 
+function formatMoneyInput(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  const parsed = parseDecimalValue(trimmed);
+  if (parsed === null) return "";
+
+  const sanitized = trimmed.replace(/\s/g, "").replace(/[^\d,.-]/g, "");
+  const negative = sanitized.startsWith("-");
+  const absoluteValue = Math.abs(parsed);
+  const formatted = absoluteValue.toLocaleString("es-AR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return `${negative && parsed !== 0 ? "-" : ""}${formatted}`;
+}
+
 export function InvoiceDetailPanel({
   row,
   rowIndex,
@@ -76,8 +96,8 @@ export function InvoiceDetailPanel({
   }, []);
 
   const containerClass = fullscreen
-    ? "fixed top-0 right-0 bottom-0 z-[61] flex w-[min(40%,520px)] min-w-[360px] flex-col border-l border-gray-100 bg-white shadow-2xl"
-    : "fixed left-1/2 top-1/2 z-[61] flex w-[min(1080px,calc(100vw-1.5rem))] max-w-[1080px] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl";
+    ? "fixed inset-x-0 bottom-0 top-14 z-[61] flex flex-col overflow-hidden rounded-t-[28px] border border-gray-100 bg-white shadow-2xl sm:inset-y-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[min(48vw,720px)] sm:min-w-[420px] sm:rounded-none sm:rounded-l-[28px] sm:border-l sm:border-t-0 2xl:w-[min(52vw,820px)]"
+    : "fixed inset-x-2 bottom-2 top-2 z-[61] flex flex-col overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-2xl sm:inset-x-4 sm:top-1/2 sm:bottom-auto sm:w-[min(1080px,calc(100vw-2rem))] sm:max-w-[1080px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:left-1/2";
 
   return (
     <>
@@ -88,24 +108,40 @@ export function InvoiceDetailPanel({
       />
 
       <div className={containerClass}>
-        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+        <div
+          className={`sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white/95 py-3 backdrop-blur ${
+            fullscreen ? "px-4 sm:px-5 xl:px-6 2xl:px-7" : "px-4 sm:px-5"
+          }`}
+        >
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
               Detalle editable
             </p>
             <p className="text-sm font-semibold text-gray-900">
-              Fila #{rowIndex + 1}
+              Fila {rowIndex + 1}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
             <X size={16} />
           </button>
         </div>
 
-        <div className={`px-4 py-3 ${fullscreen ? "fc-scrollbar flex-1 overflow-y-auto" : ""}`}>
-          <div className={fullscreen ? "grid gap-2.5" : "grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3"}>
+        <div
+          className={`py-3 ${
+            fullscreen
+              ? "fc-scrollbar flex-1 overflow-y-auto px-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 xl:px-6 2xl:px-7"
+              : "fc-scrollbar flex-1 overflow-y-auto px-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5"
+          }`}
+        >
+          <div
+            className={
+              fullscreen
+                ? "grid gap-3"
+                : "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+            }
+          >
             {visibleFields.map((field) => (
               <FieldEditor
                 key={field}
@@ -136,6 +172,7 @@ function FieldEditor({
   const isEmpty = displayValue === "—" || displayValue === "";
   const isWideField = field === "descripcion";
   const isHalfWideField = field === "razonSocial" || field === "domicilioReceptor";
+  const isPriceField = PRICE_COLS.has(field);
 
   return (
     <label
@@ -155,7 +192,7 @@ function FieldEditor({
           <select
             value={rawValue}
             onChange={(e) => onChange(e.target.value)}
-            className="h-9 w-full appearance-none rounded-xl border border-gray-200 bg-white px-3 pr-9 text-sm text-gray-900 outline-none transition focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200">
+            className="h-11 w-full appearance-none rounded-xl border border-gray-200 bg-white px-3 pr-9 text-sm text-gray-900 outline-none transition focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200">
             <option value="">Seleccionar</option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
@@ -167,15 +204,52 @@ function FieldEditor({
         </div>
       ) : DATE_COLS.has(field) ? (
         <CustomDateInput value={rawValue} onChange={onChange} />
+      ) : isPriceField ? (
+        <MoneyInput value={rawValue} onChange={onChange} />
       ) : (
         <input
           type="text"
           value={rawValue}
           onChange={(e) => onChange(e.target.value)}
           placeholder={isEmpty ? "Sin dato" : undefined}
-          className="h-9 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-300 focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200"
+          className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-300 focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200"
         />
       )}
     </label>
+  );
+}
+
+function MoneyInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string | number) => void;
+}) {
+  const [displayValue, setDisplayValue] = useState(() => formatMoneyInput(value));
+
+  useEffect(() => {
+    setDisplayValue(formatMoneyInput(value));
+  }, [value]);
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={displayValue}
+      onChange={(e) => {
+        const formatted = formatMoneyInput(e.target.value);
+        setDisplayValue(formatted);
+
+        if (!formatted.trim()) {
+          onChange("");
+          return;
+        }
+
+        const parsed = parseDecimalValue(formatted);
+        onChange(parsed ?? "");
+      }}
+      className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-300 focus:border-[#27a0c9] focus:ring-2 focus:ring-sky-200"
+    />
   );
 }

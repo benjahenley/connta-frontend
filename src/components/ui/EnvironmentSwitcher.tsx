@@ -30,7 +30,7 @@ export function EnvironmentSwitcher({
       const { environment } = await authService.getCurrentEnvironment();
       setCurrentEnvironment(environment);
     } catch (err) {
-      console.error("Failed to load environment:", err);
+      console.error("No se pudo cargar el entorno:", err);
     }
   };
 
@@ -50,7 +50,7 @@ export function EnvironmentSwitcher({
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to switch environment"
+          : "No se pudo cambiar el entorno"
       );
       // Revert to previous state
       setCurrentEnvironment(currentEnvironment);
@@ -72,12 +72,12 @@ export function EnvironmentSwitcher({
           />
           <div>
             <Label className="text-sm font-medium">
-              {isProd ? "Production" : "Test"} Environment
+              Entorno {isProd ? "Produccion" : "Prueba"}
             </Label>
             <p className="text-xs text-muted-foreground">
               {isProd
-                ? "Live invoices - real ARCA submissions"
-                : "Safe testing - no real ARCA submissions"}
+                ? "Facturas reales - envios reales a ARCA"
+                : "Pruebas seguras - sin envios reales a ARCA"}
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export function EnvironmentSwitcher({
       {!isProd && (
         <Alert>
           <p className="text-sm">
-            🧪 You&apos;re in TEST mode. Invoices won&apos;t be submitted to ARCA.
+            🧪 Estas en modo TEST. Las facturas no se enviaran a ARCA.
           </p>
         </Alert>
       )}
@@ -105,7 +105,7 @@ export function EnvironmentSwitcher({
       {isProd && (
         <Alert>
           <p className="text-sm">
-            ⚠️ Production mode active. All invoices will be submitted to ARCA.
+            ⚠️ Modo produccion activo. Todas las facturas se enviaran a ARCA.
           </p>
         </Alert>
       )}

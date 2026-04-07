@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, X, ArrowRight, Shield, FileText, Headphones } from "lucide-react";
+import {
+  Check,
+  X,
+  ArrowRight,
+  Shield,
+  FileText,
+  Headphones,
+} from "lucide-react";
 import { PLANS } from "@/data/plans";
 import { SubscriptionTier } from "@/types/auth";
 import { useAuth } from "@/components/providers/AuthProvider";
@@ -145,9 +152,13 @@ export default function PricingPage() {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 items-stretch">
             {plans.map((plan, i) => {
               const { Icon } = plan;
-              const planIdx = plan.id ? TIER_ORDER.indexOf(plan.id) : TIER_ORDER.length;
-              const isCurrent = isAuthenticated && !!plan.id && plan.id === currentTier;
-              const isDowngrade = isAuthenticated && !plan.contactSales && planIdx < currentIdx;
+              const planIdx = plan.id
+                ? TIER_ORDER.indexOf(plan.id)
+                : TIER_ORDER.length;
+              const isCurrent =
+                isAuthenticated && !!plan.id && plan.id === currentTier;
+              const isDowngrade =
+                isAuthenticated && !plan.contactSales && planIdx < currentIdx;
 
               return (
                 <div
@@ -161,15 +172,17 @@ export default function PricingPage() {
                   }`}
                   style={{
                     animationDelay: `${i * 90}ms`,
-                    borderColor: isCurrent || plan.recommended
-                      ? "#27a0c9"
-                      : plan.dark
-                        ? "#1e293b"
-                        : "#e2e8f0",
+                    borderColor:
+                      isCurrent || plan.recommended
+                        ? "#27a0c9"
+                        : plan.dark
+                          ? "#1e293b"
+                          : "#e2e8f0",
                     background: plan.dark ? "#0f172a" : undefined,
-                    boxShadow: isCurrent || plan.recommended
-                      ? "0 12px 32px -8px rgba(39,160,201,0.20)"
-                      : "0 1px 3px rgba(0,0,0,0.06)",
+                    boxShadow:
+                      isCurrent || plan.recommended
+                        ? "0 12px 32px -8px rgba(39,160,201,0.20)"
+                        : "0 1px 3px rgba(0,0,0,0.06)",
                     opacity: isDowngrade ? 0.4 : 1,
                   }}>
                   {/* Top badge */}
@@ -179,12 +192,14 @@ export default function PricingPage() {
                       style={{ background: "#27a0c9" }}>
                       Plan actual
                     </div>
-                  ) : plan.recommended && (
-                    <div
-                      className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold tracking-wide text-white whitespace-nowrap"
-                      style={{ background: "#27a0c9" }}>
-                      Recomendado
-                    </div>
+                  ) : (
+                    plan.recommended && (
+                      <div
+                        className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold tracking-wide text-white whitespace-nowrap"
+                        style={{ background: "#27a0c9" }}>
+                        Recomendado
+                      </div>
+                    )
                   )}
 
                   <div className="p-7 flex flex-col flex-1">
@@ -300,7 +315,11 @@ export default function PricingPage() {
                       <a
                         href={plan.href}
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200"
-                        style={{ background: "rgba(39,160,201,0.15)", color: "#7dd3fc", border: "1px solid rgba(39,160,201,0.25)" }}>
+                        style={{
+                          background: "rgba(39,160,201,0.15)",
+                          color: "#7dd3fc",
+                          border: "1px solid rgba(39,160,201,0.25)",
+                        }}>
                         {plan.cta}
                         <ArrowRight className="w-4 h-4" />
                       </a>
@@ -308,7 +327,10 @@ export default function PricingPage() {
                       isCurrent ? (
                         <div
                           className="w-full py-3 rounded-xl text-sm font-semibold text-center"
-                          style={{ background: "rgba(39,160,201,0.08)", color: "#27a0c9" }}>
+                          style={{
+                            background: "rgba(39,160,201,0.08)",
+                            color: "#27a0c9",
+                          }}>
                           Plan actual
                         </div>
                       ) : isDowngrade ? (
@@ -325,14 +347,28 @@ export default function PricingPage() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => router.push(`/checkout?plan=${plan.id}`)}
+                          onClick={() =>
+                            router.push(`/checkout?plan=${plan.id}`)
+                          }
                           className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200"
                           style={
                             plan.recommended
-                              ? { background: "#27a0c9", color: "#ffffff", boxShadow: "0 4px 14px rgba(39,160,201,0.35)" }
+                              ? {
+                                  background: "#27a0c9",
+                                  color: "#ffffff",
+                                  boxShadow: "0 4px 14px rgba(39,160,201,0.35)",
+                                }
                               : plan.dark
-                                ? { background: "rgba(39,160,201,0.15)", color: "#7dd3fc", border: "1px solid rgba(39,160,201,0.25)" }
-                                : { background: "transparent", color: "#27a0c9", border: "1px solid #27a0c9" }
+                                ? {
+                                    background: "rgba(39,160,201,0.15)",
+                                    color: "#7dd3fc",
+                                    border: "1px solid rgba(39,160,201,0.25)",
+                                  }
+                                : {
+                                    background: "transparent",
+                                    color: "#27a0c9",
+                                    border: "1px solid #27a0c9",
+                                  }
                           }>
                           {plan.cta}
                           <ArrowRight className="w-4 h-4" />
@@ -344,30 +380,51 @@ export default function PricingPage() {
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200"
                         style={
                           plan.recommended
-                            ? { background: "#27a0c9", color: "#ffffff", boxShadow: "0 4px 14px rgba(39,160,201,0.35)" }
+                            ? {
+                                background: "#27a0c9",
+                                color: "#ffffff",
+                                boxShadow: "0 4px 14px rgba(39,160,201,0.35)",
+                              }
                             : plan.dark
-                              ? { background: "rgba(39,160,201,0.15)", color: "#7dd3fc", border: "1px solid rgba(39,160,201,0.25)" }
-                              : { background: "transparent", color: "#27a0c9", border: "1px solid #27a0c9" }
+                              ? {
+                                  background: "rgba(39,160,201,0.15)",
+                                  color: "#7dd3fc",
+                                  border: "1px solid rgba(39,160,201,0.25)",
+                                }
+                              : {
+                                  background: "transparent",
+                                  color: "#27a0c9",
+                                  border: "1px solid #27a0c9",
+                                }
                         }
                         onMouseEnter={(e) => {
                           if (plan.recommended) {
-                            (e.currentTarget as HTMLElement).style.background = "#1e7a9c";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "#1e7a9c";
                           } else if (plan.dark) {
-                            (e.currentTarget as HTMLElement).style.background = "rgba(39,160,201,0.25)";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "rgba(39,160,201,0.25)";
                           } else {
-                            (e.currentTarget as HTMLElement).style.background = "#27a0c9";
-                            (e.currentTarget as HTMLElement).style.color = "#ffffff";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "#27a0c9";
+                            (e.currentTarget as HTMLElement).style.color =
+                              "#ffffff";
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (plan.recommended) {
-                            (e.currentTarget as HTMLElement).style.background = "#27a0c9";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "#27a0c9";
                           } else if (plan.dark) {
-                            (e.currentTarget as HTMLElement).style.background = "rgba(39,160,201,0.15)";
-                            (e.currentTarget as HTMLElement).style.color = "#7dd3fc";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "rgba(39,160,201,0.15)";
+                            (e.currentTarget as HTMLElement).style.color =
+                              "#7dd3fc";
                           } else {
-                            (e.currentTarget as HTMLElement).style.background = "transparent";
-                            (e.currentTarget as HTMLElement).style.color = "#27a0c9";
+                            (e.currentTarget as HTMLElement).style.background =
+                              "transparent";
+                            (e.currentTarget as HTMLElement).style.color =
+                              "#27a0c9";
                           }
                         }}>
                         {plan.cta}
@@ -382,19 +439,8 @@ export default function PricingPage() {
 
           {/* PROD badge note */}
           <p className="text-center text-sm text-slate-400 mt-8">
-            Los planes pagos incluyen acceso al ambiente de{" "}
-            <span
-              className="font-semibold px-1.5 py-0.5 rounded text-xs"
-              style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>
-              PRODUCCIÓN
-            </span>{" "}
-            de ARCA. El plan Free solo accede al ambiente de{" "}
-            <span
-              className="font-semibold px-1.5 py-0.5 rounded text-xs"
-              style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b" }}>
-              TEST
-            </span>
-            .
+            *Los planes pagos incluyen acceso al ambiente de producción de ARCA.
+            El plan Free solo accede al ambiente de test.*
           </p>
         </section>
 

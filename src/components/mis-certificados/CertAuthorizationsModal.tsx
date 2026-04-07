@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 import {
   X,
@@ -22,23 +22,41 @@ interface Props {
 }
 
 export function CertAuthorizationsModal({ cert, onClose }: Props) {
-  const [loading, setLoading] = useState(true);
-  const [authorizations, setAuthorizations] = useState<CertAuthorization[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    afipApi
-      .getCertAuthorizations(cert.id)
-      .then(setAuthorizations)
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [cert.id]);
+  const {
+    data: authorizations,
+    error,
+    isLoading: loading,
+  } = useSWR<CertAuthorization[]>(
+    `cert-authorizations:${cert.id}`,
+    () => afipApi.getCertAuthorizations(cert.id),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 10 * 60 * 1000,
+    },
+  );
 
   const formatCuit = (cuit: string) => {
     const c = cuit.replace(/\D/g, "");
     if (c.length === 11)
       return `${c.slice(0, 2)}-${c.slice(2, 10)}-${c.slice(10)}`;
     return cuit;
+  };
+
+  const serviceAction = (service: string) => {
+    if (service === "ws_sr_constancia_inscripcion") {
+      return {
+        href:
+          cert.environment === "PROD"
+            ? "/mis-certificados/guia/habilitar-padron-produccion"
+            : "/mis-certificados/guia/habilitar-padron-testing",
+        label: "Cómo habilitar",
+      };
+    }
+
+    return {
+      href: "/contacto",
+      label: "Me interesa",
+    };
   };
 
   return (
@@ -91,58 +109,62 @@ export function CertAuthorizationsModal({ cert, onClose }: Props) {
             <div className="py-8 text-center">
               <XCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
               <p className="mc-sora text-sm text-red-500 leading-relaxed">
-                {error}
+                {error.message}
               </p>
             </div>
           ) : (
             <>
               <ul className="space-y-2">
-                {authorizations.map(({ service, label, authorized }) => (
-                  <li
-                    key={service}
-                    className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl"
-                    style={{ background: "#f8fafc" }}>
-                    <div className="min-w-0">
-                      <p className="mc-sora text-sm font-medium text-gray-700 leading-snug">
-                        {label}
-                      </p>
-                      <p className="mc-sora text-xs font-mono text-gray-400 mt-0.5">
-                        {service}
-                      </p>
-                    </div>
-                    {authorized ? (
-                      <span
-                        className="mc-sora inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg flex-shrink-0"
-                        style={{
-                          background: "rgba(16,185,129,.1)",
-                          color: "#065f46",
-                        }}>
-                        <CheckCircle2 className="w-3 h-3" />
-                        Habilitado
-                      </span>
-                    ) : (
-                      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                        <span
-                          className="mc-sora inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
-                          style={{
-                            background: "rgba(239,68,68,.08)",
-                            color: "#b91c1c",
-                          }}>
-                          <XCircle className="w-3 h-3" />
-                          Sin acceso
-                        </span>
-                        <Link
-                          href="/contacto"
-                          onClick={onClose}
-                          className="mc-sora inline-flex items-center gap-1 text-xs font-medium transition-colors"
-                          style={{ color: "#27a0c9" }}>
-                          Me interesa
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
+                {authorizations?.map(({ service, label, authorized }) => {
+                  const action = serviceAction(service);
+
+                  return (
+                    <li
+                      key={service}
+                      className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl"
+                      style={{ background: "#f8fafc" }}>
+                      <div className="min-w-0">
+                        <p className="mc-sora text-sm font-medium text-gray-700 leading-snug">
+                          {label}
+                        </p>
+                        <p className="mc-sora text-xs font-mono text-gray-400 mt-0.5">
+                          {service}
+                        </p>
                       </div>
-                    )}
-                  </li>
-                ))}
+                      {authorized ? (
+                        <span
+                          className="mc-sora inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg flex-shrink-0"
+                          style={{
+                            background: "rgba(16,185,129,.1)",
+                            color: "#065f46",
+                          }}>
+                          <CheckCircle2 className="w-3 h-3" />
+                          Habilitado
+                        </span>
+                      ) : (
+                        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                          <span
+                            className="mc-sora inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                            style={{
+                              background: "rgba(239,68,68,.08)",
+                              color: "#b91c1c",
+                            }}>
+                            <XCircle className="w-3 h-3" />
+                            Sin acceso
+                          </span>
+                          <Link
+                            href={action.href}
+                            onClick={onClose}
+                            className="mc-sora inline-flex items-center gap-1 text-xs font-medium transition-colors"
+                            style={{ color: "#27a0c9" }}>
+                            {action.label}
+                            <ArrowRight className="w-3 h-3" />
+                          </Link>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
 
               <p className="mc-sora text-xs text-gray-400 mt-4 leading-relaxed text-center">

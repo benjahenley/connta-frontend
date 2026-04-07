@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth";
+import { authService, BackendUnavailableError } from "@/services/auth";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
@@ -119,6 +119,7 @@ function generateStrongPassword(length = 18) {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<Direction>("forward");
   const [animKey, setAnimKey] = useState(0);
@@ -140,14 +141,60 @@ export default function SignUpPage() {
 
   // On mount: guard — check Supabase session first, then sessionStorage fallback.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user?.email_confirmed_at) {
-        // OTP confirmed, session alive → go straight to step 3
-        setEmail(session.user.email ?? "");
-        setName(session.user.user_metadata?.name ?? "");
-        setCuit(session.user.user_metadata?.cuit ?? "");
-        setStep(3);
+    let cancelled = false;
+
+    const bootstrapSignUp = async () => {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ?? "";
+      if (!apiUrl) {
+        const offlineUrl = new URL("/backend-offline", window.location.origin);
+        offlineUrl.searchParams.set("redirectTo", "/auth/sign-up");
+        router.replace(offlineUrl.pathname + offlineUrl.search);
         return;
+      }
+
+      try {
+        const healthResponse = await fetch(`${apiUrl}/health`);
+        if (!healthResponse.ok) {
+          throw new Error("BACKEND_UNAVAILABLE");
+        }
+      } catch {
+        if (cancelled) return;
+        const offlineUrl = new URL("/backend-offline", window.location.origin);
+        offlineUrl.searchParams.set("redirectTo", "/auth/sign-up");
+        router.replace(offlineUrl.pathname + offlineUrl.search);
+        return;
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (cancelled) return;
+
+      if (session?.user?.email_confirmed_at) {
+        try {
+          const currentUser = await authService.getCurrentUser();
+          if (cancelled) return;
+
+          if (currentUser) {
+            router.replace("/dashboard");
+            return;
+          }
+
+          setEmail(session.user.email ?? "");
+          setName(session.user.user_metadata?.name ?? "");
+          setCuit(session.user.user_metadata?.cuit ?? "");
+          setStep(3);
+          return;
+        } catch (error) {
+          if (cancelled) return;
+          if (error instanceof BackendUnavailableError) {
+            const offlineUrl = new URL("/backend-offline", window.location.origin);
+            offlineUrl.searchParams.set("redirectTo", "/auth/sign-up");
+            router.replace(offlineUrl.pathname + offlineUrl.search);
+            return;
+          }
+        }
       }
 
       // No live session — fall back to sessionStorage for step 2 restore
@@ -170,8 +217,36 @@ export default function SignUpPage() {
       } catch {
         clearProgress();
       }
-    });
-  }, []);
+
+      if (!cancelled) {
+        setIsBootstrapping(false);
+      }
+    };
+
+    void bootstrapSignUp();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
+  if (isBootstrapping) {
+    return (
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center"
+        style={{ background: "#080f16" }}
+      >
+        <Image
+          src="/favicon.svg"
+          alt="Connta"
+          width={140}
+          height={140}
+          priority
+          className="animate-pulse"
+        />
+      </div>
+    );
+  }
 
   const hasConfirmPassword = confirmPassword.length > 0;
   const passwordsMatch = hasConfirmPassword && password === confirmPassword;

@@ -102,8 +102,8 @@ export default function UpgradeModal({
         }}>
         {/* Modal box */}
         <div
-          className="modal-box relative bg-white rounded-2xl shadow-2xl w-full overflow-hidden flex flex-col"
-          style={{ maxWidth: "1100px", maxHeight: "90vh" }}>
+          className="modal-box relative flex max-h-[90vh] w-full max-w-[1320px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        >
           <PlansStep
             currentTier={currentTier}
             highlightTier={initialTier}
@@ -139,7 +139,7 @@ function PlansStep({
   const currentIdx = TIER_ORDER.indexOf(currentTier);
 
   return (
-    <div className="overflow-y-auto">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Header */}
       <div
         className="sticky top-0 z-10 flex items-center justify-between px-8 py-5 border-b border-gray-100"
@@ -161,8 +161,9 @@ function PlansStep({
       </div>
 
       {/* Cards */}
-      <div className="p-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-6 pt-5 sm:px-6 sm:pb-7 sm:pt-6">
+        <div className="overflow-x-auto overflow-y-visible px-1 pb-3 pt-4">
+          <div className="flex min-w-max items-stretch gap-4">
           {PLANS.map((plan) => {
             const planIdx = plan.id ? TIER_ORDER.indexOf(plan.id) : TIER_ORDER.length;
             const isCurrent = !!plan.id && plan.id === currentTier;
@@ -175,7 +176,7 @@ function PlansStep({
               <div
                 key={plan.id ?? plan.name}
                 onClick={() => isSelectable && onSelect(plan)}
-                className={`plan-pill relative flex flex-col rounded-xl border-2 ${
+                className={`plan-pill relative flex w-[248px] min-w-[248px] flex-col rounded-xl border-2 ${
                   isSelectable ? "selectable cursor-pointer" : ""
                 } ${plan.recommended ? "rec" : ""} ${plan.dark ? "dark-p" : ""} ${
                   isCurrent ? "ring-2 ring-offset-1" : ""
@@ -363,6 +364,7 @@ function PlansStep({
               </div>
             );
           })}
+          </div>
         </div>
 
         {/* Footer note */}

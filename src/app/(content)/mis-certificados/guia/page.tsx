@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,8 +10,11 @@ import {
   BadgeCheck,
   Receipt,
   FileText,
+  MapPin,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
+
+type EnvFilter = "all" | "testing" | "produccion";
 
 interface Guide {
   slug: string;
@@ -21,6 +24,8 @@ interface Guide {
   tagColor: string;
   readTime: string;
   icon: React.ElementType;
+  /** Which environments this guide applies to. Omit for env-agnostic guides. */
+  envs?: ("testing" | "produccion")[];
 }
 
 interface Category {
@@ -30,7 +35,7 @@ interface Category {
 
 const CATEGORIES: Category[] = [
   {
-    label: "Certificados",
+    label: "Autorizaciones",
     guides: [
       {
         slug: "habilitar-testing",
@@ -41,6 +46,7 @@ const CATEGORIES: Category[] = [
         tagColor: "#27a0c9",
         readTime: "5 min",
         icon: ShieldCheck,
+        envs: ["testing"],
       },
       {
         slug: "habilitar-produccion",
@@ -51,6 +57,29 @@ const CATEGORIES: Category[] = [
         tagColor: "#27a0c9",
         readTime: "7 min",
         icon: BadgeCheck,
+        envs: ["produccion"],
+      },
+      {
+        slug: "habilitar-padron-testing",
+        title: "Habilitá la consulta de domicilio fiscal en testing",
+        description:
+          "Autorizá el servicio de consulta de constancia de inscripción en homologación para que Connta complete automáticamente la dirección fiscal de los receptores durante tus pruebas.",
+        tag: "Homologación",
+        tagColor: "#27a0c9",
+        readTime: "4 min",
+        icon: MapPin,
+        envs: ["testing"],
+      },
+      {
+        slug: "habilitar-padron-produccion",
+        title: "Habilitá la consulta de domicilio fiscal en producción",
+        description:
+          "Autorizá el servicio de consulta de constancia de inscripción en producción para que Connta complete automáticamente la dirección fiscal de los receptores al emitir comprobantes reales.",
+        tag: "Producción",
+        tagColor: "#27a0c9",
+        readTime: "4 min",
+        icon: MapPin,
+        envs: ["produccion"],
       },
     ],
   },
@@ -81,7 +110,16 @@ const CATEGORIES: Category[] = [
   },
 ];
 
+function filterGuides(guides: Guide[], envFilter: EnvFilter): Guide[] {
+  if (envFilter === "all") return guides;
+  return guides.filter(
+    (g) => !g.envs || g.envs.includes(envFilter),
+  );
+}
+
 function GuiasIndexContent() {
+  const [envFilter, setEnvFilter] = useState<EnvFilter>("all");
+
   return (
     <>
       <style>{`
@@ -111,32 +149,42 @@ function GuiasIndexContent() {
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-10 gi-sora">
         <PageHeader
-          className="gi-anim gi-a1 mb-10"
+          className="gi-anim gi-a1 mb-6"
           eyebrow="Guías"
           icon={BookOpen}
           title="Centro de ayuda"
           description="Guías paso a paso para configurar y operar la plataforma."
         />
 
+        {/* Environment filter */}
+        <div className="gi-anim gi-a1 mb-8">
+          <EnvFilterToggle value={envFilter} onChange={setEnvFilter} />
+        </div>
+
         <div className="space-y-10">
-          {CATEGORIES.map((category, ci) => (
-            <div key={category.label} className={`gi-anim gi-a${ci + 2}`}>
-              <div className="flex items-center gap-3 mb-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-400">
-                  {category.label}
-                </p>
-                <div
-                  className="flex-1 h-px"
-                  style={{ background: "#f1f5f9" }}
-                />
+          {CATEGORIES.map((category, ci) => {
+            const filtered = filterGuides(category.guides, envFilter);
+            if (filtered.length === 0) return null;
+
+            return (
+              <div key={category.label} className={`gi-anim gi-a${ci + 2}`}>
+                <div className="flex items-center gap-3 mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-400">
+                    {category.label}
+                  </p>
+                  <div
+                    className="flex-1 h-px"
+                    style={{ background: "#f1f5f9" }}
+                  />
+                </div>
+                <div className="space-y-3">
+                  {filtered.map((guide) => (
+                    <GuideCard key={guide.slug} guide={guide} />
+                  ))}
+                </div>
               </div>
-              <div className="space-y-3">
-                {category.guides.map((guide) => (
-                  <GuideCard key={guide.slug} guide={guide} />
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </>
@@ -148,6 +196,43 @@ export default function GuiasIndex() {
     <Suspense fallback={null}>
       <GuiasIndexContent />
     </Suspense>
+  );
+}
+
+function EnvFilterToggle({
+  value,
+  onChange,
+}: {
+  value: EnvFilter;
+  onChange: (v: EnvFilter) => void;
+}) {
+  const options: { key: EnvFilter; label: string }[] = [
+    { key: "all", label: "Todas" },
+    { key: "testing", label: "Homologación" },
+    { key: "produccion", label: "Producción" },
+  ];
+
+  return (
+    <div
+      className="inline-flex rounded-xl p-1 gi-sora"
+      style={{ background: "rgba(39,160,201,.08)" }}>
+      {options.map((option) => {
+        const active = value === option.key;
+        return (
+          <button
+            key={option.key}
+            onClick={() => onChange(option.key)}
+            className="relative px-4 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer"
+            style={{
+              background: active ? "white" : "transparent",
+              color: active ? "#0f172a" : "#64748b",
+              boxShadow: active ? "0 1px 4px rgba(0,0,0,.08)" : "none",
+            }}>
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 

@@ -191,6 +191,22 @@ export default function GuiaComprobantesEmitidos() {
                   Una vez dentro del portal, seguí estos pasos para llegar a los comprobantes emitidos:
                 </p>
 
+                <div
+                  className="g-anim g-anim-5 rounded-xl px-5 py-4 g-sora text-sm"
+                  style={{
+                    background: "rgba(39,160,201,.05)",
+                    border: "1px solid rgba(39,160,201,.2)",
+                  }}>
+                  <div className="flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#27a0c9" }} />
+                    <p className="text-gray-600 leading-relaxed">
+                      Tené en cuenta que los comprobantes pueden tardar un poco en aparecer
+                      dentro de <span className="font-semibold text-gray-800">Mis Comprobantes</span>.
+                      Si recién emitiste una factura, esperá unos minutos y volvé a consultar.
+                    </p>
+                  </div>
+                </div>
+
                 {[
                   {
                     step: "A",

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type {
   CertData,
-  ScannedInvoice,
   UploadSessionSummary,
 } from "@/services/afip";
 import { afipApi } from "@/services/afip";
@@ -26,7 +25,6 @@ interface PreviewBootstrapPayload {
   cuit: string;
   environment: "DEV" | "PROD";
   companyName: string | null;
-  invoices: ScannedInvoice[];
 }
 
 export default function Facturacion() {
@@ -86,8 +84,9 @@ export default function Facturacion() {
       setIsPasteMode(false);
 
       try {
-        const { uploadSessionId, invoices } = await afipApi.scanExcel({
+        const { uploadSessionId } = await afipApi.scanExcel({
           file,
+          certRecordId: selectedCert.id,
           cuit: selectedCert.cuit,
           environment: selectedCert.environment,
         });
@@ -100,7 +99,6 @@ export default function Facturacion() {
           cuit: selectedCert.cuit,
           environment: selectedCert.environment,
           companyName: selectedCert.companyName ?? null,
-          invoices,
         };
         sessionStorage.setItem(
           previewCacheKey(uploadSessionId),

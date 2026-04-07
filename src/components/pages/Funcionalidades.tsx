@@ -135,7 +135,7 @@ export default function FuncionalidadesPage() {
                 border: "1px solid rgba(39,160,201,.25)",
               }}>
               <Sparkles className="w-3.5 h-3.5" />
-              Roadmap 2025
+              Roadmap 2026
             </div>
 
             <h1 className="fn-au fn-d2 fn-display text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">

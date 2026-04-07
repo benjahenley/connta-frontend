@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Loader2, Pencil, Trash2 } from "lucide-react";
 import type { InvoiceRow } from "@/app/(content)/facturacion/preview/constants";
 import { formatCellValue } from "@/app/(content)/facturacion/preview/formatters";
 import { canEditCell } from "./tableUtils";
@@ -14,6 +14,7 @@ interface PreviewRowProps {
   origRow: InvoiceRow | undefined;
   isRestored: boolean;
   tone?: "error" | "warning";
+  isResolvingAddresses?: boolean;
   editCell: { row: number; col: string } | null;
   editValue: string;
   onStartEdit: (rowIdx: number, col: string, row: InvoiceRow) => void;
@@ -32,6 +33,7 @@ export const PreviewRow = memo(
     origRow,
     isRestored,
     tone,
+    isResolvingAddresses = false,
     editCell,
     editValue,
     onStartEdit,
@@ -41,6 +43,12 @@ export const PreviewRow = memo(
     onDeleteRow,
     onRowClick,
   }: PreviewRowProps) {
+    const requiresFiscalAddress = (() => {
+      const docTipo = Number(row.docTipo);
+      const digits = String(row.docNro ?? "").replace(/\D/g, "");
+      return (docTipo === 80 || row.docTipo == null) && digits.length === 11;
+    })();
+
     const rowToneClass =
       tone === "error"
         ? "bg-red-50/70 hover:bg-red-50"
@@ -92,12 +100,24 @@ export const PreviewRow = memo(
                     canEditCell(row, col) ? "cursor-pointer" : "cursor-default"
                   }`}
                   onClick={() => onStartEdit(rowIdx, col, row)}>
-                  <span
-                    className={
-                      isEdited ? "text-sky-900 font-medium" : "text-gray-700"
-                    }>
-                    {formatCellValue(col, row[col], row)}
-                  </span>
+                  {col === "domicilioReceptor" &&
+                  isResolvingAddresses &&
+                  requiresFiscalAddress &&
+                  !String(row[col] ?? "").trim() ? (
+                    <span className="inline-flex items-center gap-1.5 text-sky-700">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <span className="text-xs font-medium">
+                        Buscando domicilio...
+                      </span>
+                    </span>
+                  ) : (
+                    <span
+                      className={
+                        isEdited ? "text-sky-900 font-medium" : "text-gray-700"
+                      }>
+                      {formatCellValue(col, row[col], row)}
+                    </span>
+                  )}
                   {canEditCell(row, col) && (
                     <Pencil className="w-3 h-3 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}

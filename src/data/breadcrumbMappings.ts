@@ -35,6 +35,24 @@ export const breadcrumbMappings: BreadcrumbMappings = {
     { url: "/mis-certificados/guia", title: "Guías" },
     { url: null, title: "Habilitar certificado de producción" },
   ],
+  "/mis-certificados/guia/habilitar-padron": [
+    { url: "/dashboard", title: "Dashboard" },
+    { url: "/mis-certificados", title: "Mis Certificados" },
+    { url: "/mis-certificados/guia", title: "Guías" },
+    { url: null, title: "Habilitar consulta de domicilio fiscal" },
+  ],
+  "/mis-certificados/guia/habilitar-padron-testing": [
+    { url: "/dashboard", title: "Dashboard" },
+    { url: "/mis-certificados", title: "Mis Certificados" },
+    { url: "/mis-certificados/guia", title: "Guías" },
+    { url: null, title: "Habilitar padrón en testing" },
+  ],
+  "/mis-certificados/guia/habilitar-padron-produccion": [
+    { url: "/dashboard", title: "Dashboard" },
+    { url: "/mis-certificados", title: "Mis Certificados" },
+    { url: "/mis-certificados/guia", title: "Guías" },
+    { url: null, title: "Habilitar padrón en producción" },
+  ],
   "/mis-certificados/guia/facturacion": [
     { url: "/dashboard", title: "Dashboard" },
     { url: "/mis-certificados/guia", title: "Guías" },

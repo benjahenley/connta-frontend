@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { afipApi } from "@/services/afip";
 import type { UploadSessionDetail } from "@/services/afip";
+import type { UpdatedInvoicePayload } from "@/services/afip";
 import { invalidateUploadHistory } from "@/hooks/useAfipData";
 import { FacturacionPreviewSkeleton } from "@/components/facturacion/FacturacionSkeleton";
 import { PreviewTable } from "@/components/facturacion/preview/PreviewTable";
@@ -31,7 +32,6 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { renderErrorText } from "./renderErrorText";
 import type { InvoiceRow } from "./constants";
 import { EXPECTED_COLS, SERVICE_DATE_COLS } from "./constants";
-import type { ScannedInvoice } from "@/services/afip";
 
 /* ── Helpers ────────────────────────────────────────────────── */
 
@@ -49,6 +49,7 @@ export interface RowValidation {
 }
 
 interface InvoiceRowExtras {
+  domicilioReceptor?: string | null;
   razonSocial?: string | null;
   descripcion?: string | null;
   fchServDesde?: string | null;
@@ -62,7 +63,6 @@ interface PreviewBootstrapPayload {
   cuit: string;
   environment: "DEV" | "PROD";
   companyName: string | null;
-  invoices: ScannedInvoice[];
 }
 
 interface VisibleValidationRow {
@@ -77,6 +77,33 @@ interface GroupedValidationIssue {
   code: string;
   message: string;
   rowNumbers: number[];
+}
+
+function formatRowRange(rowNumbers: number[]): string {
+  if (rowNumbers.length === 0) return "";
+
+  const ranges: string[] = [];
+  let start = rowNumbers[0];
+  let end = rowNumbers[0];
+
+  for (let i = 1; i < rowNumbers.length; i++) {
+    const current = rowNumbers[i];
+    if (current === end + 1) {
+      end = current;
+      continue;
+    }
+    ranges.push(start === end ? `${start}` : `${start}-${end}`);
+    start = current;
+    end = current;
+  }
+
+  ranges.push(start === end ? `${start}` : `${start}-${end}`);
+  return ranges.join(", ");
+}
+
+function formatRowSummary(rowNumbers: number[]): string {
+  const label = rowNumbers.length === 1 ? "Fila" : "Filas";
+  return `${label}: ${formatRowRange(rowNumbers)}`;
 }
 
 function filterRetryRows(
@@ -119,6 +146,7 @@ function mapUploadInvoices(detail: UploadSessionDetail): InvoiceRow[] {
       concepto: inv.concepto,
       docTipo: inv.docTipo,
       docNro: inv.docNro,
+      domicilioReceptor: extra.domicilioReceptor ?? null,
       condicionIvaReceptorId: extra.condicionIvaReceptorId ?? 1,
       razonSocial: extra.razonSocial ?? null,
       impNeto: inv.impNeto,
@@ -134,30 +162,29 @@ function mapUploadInvoices(detail: UploadSessionDetail): InvoiceRow[] {
   });
 }
 
-function mapScannedInvoices(invoices: ScannedInvoice[]): InvoiceRow[] {
-  return invoices.map((inv) => {
-    const extra = inv as ScannedInvoice &
-      InvoiceRowExtras & { condicionIvaReceptorId?: number | null };
-    return {
-      _id: inv.id,
-      cbteTipo: inv.cbteTipo,
-      concepto: inv.concepto,
-      docTipo: inv.docTipo,
-      docNro: inv.docNro,
-      condicionIvaReceptorId: extra.condicionIvaReceptorId ?? 1,
-      razonSocial: extra.razonSocial ?? null,
-      descripcion: extra.descripcion ?? null,
-      impNeto: inv.impNeto,
-      alicuotaIva: 21,
-      impIva: inv.impIva,
-      impOpEx: inv.impOpEx,
-      impTotal: inv.impTotal,
-      cbteFch: inv.cbteFch,
-      fchServDesde: extra.fchServDesde ?? null,
-      fchServHasta: extra.fchServHasta ?? null,
-      fchVtoPago: extra.fchVtoPago ?? null,
-    };
-  });
+function mapUpdatedInvoices(
+  updatedInvoices: UpdatedInvoicePayload[],
+): InvoiceRow[] {
+  return updatedInvoices.map((inv) => ({
+    _id: inv.id,
+    cbteTipo: inv.cbteTipo,
+    concepto: inv.concepto,
+    docTipo: inv.docTipo,
+    docNro: inv.docNro,
+    domicilioReceptor: inv.domicilioReceptor ?? null,
+    condicionIvaReceptorId: inv.condicionIvaReceptorId ?? 1,
+    razonSocial: inv.razonSocial ?? null,
+    descripcion: inv.descripcion ?? null,
+    impNeto: inv.impNeto,
+    alicuotaIva: 21,
+    impIva: inv.impIva,
+    impOpEx: inv.impOpEx,
+    impTotal: inv.impTotal,
+    cbteFch: inv.cbteFch,
+    fchServDesde: inv.fchServDesde ?? null,
+    fchServHasta: inv.fchServHasta ?? null,
+    fchVtoPago: inv.fchVtoPago ?? null,
+  }));
 }
 
 function getVisibleValidationRows(
@@ -402,7 +429,9 @@ export default function FacturacionPreview() {
   }, [registerGuard]);
 
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+  const [isResolvingAddresses, setIsResolvingAddresses] = useState(false);
   const generatingSessionRef = useRef<string | null>(null);
+  const autoResolveAddressesTriggeredRef = useRef(false);
 
   /* ── Manual status check ──────────────────────────────────── */
   const checkStatus = useCallback(async () => {
@@ -483,32 +512,102 @@ export default function FacturacionPreview() {
     [retryFailedOnly, setOriginalRows],
   );
 
+  const applySavedInvoices = useCallback(
+    (updatedInvoices: UpdatedInvoicePayload[]) => {
+      if (updatedInvoices.length === 0) return;
+
+      const updatedRowsById = new Map(
+        mapUpdatedInvoices(updatedInvoices).map((row) => [
+          String(row._id ?? ""),
+          row,
+        ]),
+      );
+
+      const nextRows = rowsRef.current.map((row) => {
+        const id = String(row._id ?? "");
+        return updatedRowsById.get(id) ?? row;
+      });
+
+      setRows(nextRows);
+      setOriginalRows(nextRows);
+      setColumns(deriveColumns(nextRows));
+
+      const nextValidationMap = new Map(validationMap);
+      for (const invoice of updatedInvoices) {
+        let issues: ValidationIssue[] = [];
+        let autoFilled: string[] = [];
+        try {
+          if (invoice.validationIssues)
+            issues = JSON.parse(invoice.validationIssues);
+        } catch {
+          /* ignore */
+        }
+        try {
+          if (invoice.autoFilledFields) {
+            autoFilled = JSON.parse(invoice.autoFilledFields);
+          }
+        } catch {
+          /* ignore */
+        }
+        nextValidationMap.set(invoice.id, {
+          issues,
+          hasErrors: issues.some((issue) => issue.severity === "error"),
+          autoFilledFields: autoFilled,
+        });
+      }
+      setValidationMap(nextValidationMap);
+    },
+    [setOriginalRows, validationMap],
+  );
+
   const hydrateFromBootstrap = useCallback(
     (bootstrap: PreviewBootstrapPayload) => {
-      const data = mapScannedInvoices(bootstrap.invoices);
-      setOriginalRows(data);
       setFileName(bootstrap.fileName);
       setUploadSessionId(bootstrap.uploadSessionId);
-      setRows(data);
       setCuit(bootstrap.cuit);
       setEnvironment(bootstrap.environment);
       setCertCompany(bootstrap.companyName ?? "");
-      setColumns(deriveColumns(data));
-      setLoaded(true);
-
-      // Build validation map from ScannedInvoice validation fields
-      const vmap = new Map<string, RowValidation>();
-      for (const inv of bootstrap.invoices) {
-        vmap.set(inv.id, {
-          issues: (inv.validationIssues ?? []) as ValidationIssue[],
-          hasErrors: inv.hasErrors ?? false,
-          autoFilledFields: inv.autoFilledFields ?? [],
-        });
-      }
-      setValidationMap(vmap);
     },
-    [setOriginalRows],
+    [],
   );
+
+  /* ── Resolve missing addresses ────────────────────────────── */
+  const handleResolveAddresses = useCallback(async () => {
+    if (!uploadSessionId || isResolvingAddresses) return;
+    setIsResolvingAddresses(true);
+    try {
+      const result = await afipApi.resolveAddresses(uploadSessionId);
+      const detail = await afipApi.getUploadDetail(uploadSessionId);
+      hydrateFromDetail(detail);
+      if (result.resolved === 0) {
+        const diagnostics = [
+          result.attempted != null
+            ? `CUITs consultados: ${result.attempted}.`
+            : null,
+          result.failed != null
+            ? `Consultas fallidas: ${result.failed}.`
+            : null,
+          result.sampleErrors?.[0]
+            ? `Primer error: ${result.sampleErrors[0]}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(" ");
+        setGenerateError(
+          diagnostics ||
+            "No se pudo resolver ninguna dirección fiscal con ARCA para esta carga.",
+        );
+      }
+    } catch (e: unknown) {
+      const message =
+        e instanceof Error
+          ? e.message
+          : "Error al resolver direcciones fiscales";
+      setGenerateError(message);
+    } finally {
+      setIsResolvingAddresses(false);
+    }
+  }, [uploadSessionId, isResolvingAddresses, hydrateFromDetail]);
 
   // Fetch from API on mount — single source of truth
   useEffect(() => {
@@ -736,9 +835,8 @@ export default function FacturacionPreview() {
     setIsSaving(true);
 
     try {
-      await afipApi.updateInvoices(uploadSessionId, payload);
-      const detail = await afipApi.getUploadDetail(uploadSessionId);
-      hydrateFromDetail(detail);
+      const result = await afipApi.updateInvoices(uploadSessionId, payload);
+      applySavedInvoices(result.invoices);
       syncEditedCount(0);
     } catch (e: unknown) {
       const message =
@@ -748,8 +846,8 @@ export default function FacturacionPreview() {
       setIsSaving(false);
     }
   }, [
+    applySavedInvoices,
     buildEditedPayload,
-    hydrateFromDetail,
     rows,
     setOriginalRows,
     syncEditedCount,
@@ -943,6 +1041,37 @@ export default function FacturacionPreview() {
   ).length;
   const warnCount = visibleValidationRows.length - errorCount;
 
+  useEffect(() => {
+    autoResolveAddressesTriggeredRef.current = false;
+  }, [uploadSessionId]);
+
+  useEffect(() => {
+    const hasPendingAddressWarning = visibleValidationRows.some((row) =>
+      row.issues.some(
+        (issue) => issue.code === "RECEPTOR_FISCAL_ADDRESS_REQUIRED",
+      ),
+    );
+
+    if (
+      !uploadSessionId ||
+      !loaded ||
+      !hasPendingAddressWarning ||
+      isResolvingAddresses ||
+      autoResolveAddressesTriggeredRef.current
+    ) {
+      return;
+    }
+
+    autoResolveAddressesTriggeredRef.current = true;
+    void handleResolveAddresses();
+  }, [
+    uploadSessionId,
+    loaded,
+    visibleValidationRows,
+    isResolvingAddresses,
+    handleResolveAddresses,
+  ]);
+
   /* ── Render ───────────────────────────────────────────────── */
   return (
     <>
@@ -1007,6 +1136,9 @@ export default function FacturacionPreview() {
               <ValidationDetailsPanel
                 rows={visibleValidationRows}
                 failedInvoiceError={generateResult?.failedInvoiceError ?? null}
+                environment={environment}
+                onResolveAddresses={handleResolveAddresses}
+                isResolvingAddresses={isResolvingAddresses}
               />
             )}
             <div className="fc-anim fc-a3 mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-gray-400 pb-6 pt-4 px-2">
@@ -1048,6 +1180,7 @@ export default function FacturacionPreview() {
                   hasServiceRows={hasServiceRows}
                   restoredIds={restoredIds}
                   rowTones={rowTones}
+                  isResolvingAddresses={isResolvingAddresses}
                   onCellEdit={handleCellEdit}
                   onBulkEdit={handleBulkEdit}
                   onDeleteRow={handleDeleteRow}
@@ -1606,7 +1739,7 @@ const DescripcionField = forwardRef<
         </p>
       ) : (
         <p className="text-xs text-gray-400 mt-1">
-          No se envía a ARCA — se usa para el PDF y registros internos.
+          Afecta solo a comprobantes sin descripción propia.
         </p>
       )}
     </div>
@@ -1616,14 +1749,26 @@ const DescripcionField = forwardRef<
 function ValidationDetailsPanel({
   rows,
   failedInvoiceError,
+  environment,
+  onResolveAddresses,
+  isResolvingAddresses,
 }: {
   rows: VisibleValidationRow[];
   failedInvoiceError: string | null;
+  environment: "DEV" | "PROD";
+  onResolveAddresses?: () => void;
+  isResolvingAddresses?: boolean;
 }) {
   const failedRows = rows.filter((row) => row.hasErrors);
   const groupedErrors = groupValidationIssues(rows, "error");
   const groupedWarnings = groupValidationIssues(rows, "warning");
   const hasErrors = groupedErrors.length > 0;
+  const addressWarning = groupedWarnings.find(
+    (w) => w.code === "RECEPTOR_FISCAL_ADDRESS_REQUIRED",
+  );
+  const otherWarnings = groupedWarnings.filter(
+    (w) => w.code !== "RECEPTOR_FISCAL_ADDRESS_REQUIRED",
+  );
 
   return (
     <div
@@ -1677,26 +1822,23 @@ function ValidationDetailsPanel({
               {groupedErrors.map((issue) => (
                 <div
                   key={`${issue.code}-${issue.message}`}
-                  className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 sm:px-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="shrink-0 rounded-lg bg-red-600 px-2 py-1 text-xs font-bold text-white">
-                      {issue.rowNumbers.length} fila(s)
-                    </span>
-                    <span className="break-all text-xs font-semibold uppercase tracking-wide text-red-600">
-                      {issue.code}
+                  className="relative rounded-xl border border-red-200 bg-red-50 px-3 py-3 sm:px-4">
+                  <span className="absolute right-3 top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-bold text-white">
+                    {issue.rowNumbers.length}
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2 pr-10">
+                    <span className="text-xs font-semibold text-red-600">
+                      {formatRowSummary(issue.rowNumbers)}
                     </span>
                   </div>
                   <p className="mt-2 text-sm text-red-800">{issue.message}</p>
-                  <p className="mt-2 text-xs font-medium text-red-600">
-                    Filas: {issue.rowNumbers.join(", ")}
-                  </p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {groupedWarnings.length > 0 && (
+        {(addressWarning || otherWarnings.length > 0) && (
           <div className="min-w-0">
             {hasErrors && (
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-amber-500">
@@ -1704,22 +1846,66 @@ function ValidationDetailsPanel({
               </p>
             )}
             <div className="space-y-3">
-              {groupedWarnings.map((issue) => (
+              {addressWarning && (
+                <div className="relative rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 sm:px-4">
+                  <span className="absolute right-3 top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">
+                    {addressWarning.rowNumbers.length}
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2 pr-10">
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-amber-700">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {formatRowSummary(addressWarning.rowNumbers)}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-amber-900">
+                    {isResolvingAddresses
+                      ? "Estamos intentando encontrar el domicilio fiscal de estos receptores. Cuando termine la búsqueda, vas a poder revisar o editar cada dirección manualmente."
+                      : addressWarning.message}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {onResolveAddresses && (
+                      <button
+                        onClick={onResolveAddresses}
+                        disabled={isResolvingAddresses}
+                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition-all hover:brightness-110 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ background: "#27a0c9" }}>
+                        {isResolvingAddresses ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <MapPin className="h-3 w-3" />
+                        )}
+                        {isResolvingAddresses
+                          ? "Resolviendo..."
+                          : "Resolver direcciones"}
+                      </button>
+                    )}
+                    <a
+                      href={
+                        environment === "PROD"
+                          ? "/mis-certificados/guia/habilitar-padron-produccion"
+                          : "/mis-certificados/guia/habilitar-padron-testing"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-50 cursor-pointer">
+                      ¿Cómo habilitar?
+                    </a>
+                  </div>
+                </div>
+              )}
+              {otherWarnings.map((issue) => (
                 <div
                   key={`${issue.code}-${issue.message}`}
-                  className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 sm:px-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="shrink-0 rounded-lg bg-amber-500 px-2 py-1 text-xs font-bold text-white">
-                      {issue.rowNumbers.length} fila(s)
-                    </span>
-                    <span className="break-all text-xs font-semibold uppercase tracking-wide text-amber-700">
-                      {issue.code}
+                  className="relative rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 sm:px-4">
+                  <span className="absolute right-3 top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">
+                    {issue.rowNumbers.length}
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2 pr-10">
+                    <span className="text-xs font-semibold text-amber-700">
+                      {formatRowSummary(issue.rowNumbers)}
                     </span>
                   </div>
                   <p className="mt-2 text-sm text-amber-900">{issue.message}</p>
-                  <p className="mt-2 text-xs font-medium text-amber-700">
-                    Filas: {issue.rowNumbers.join(", ")}
-                  </p>
                 </div>
               ))}
             </div>

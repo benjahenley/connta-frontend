@@ -2,6 +2,7 @@
 
 import { DROPDOWN_COLS, DATE_COLS } from "@/app/(content)/facturacion/preview/constants";
 import { CellDropdown } from "./CellDropdown";
+import { CustomDateInput } from "./CustomDateInput";
 
 interface EditingCellProps {
   col: string;
@@ -39,7 +40,16 @@ export function EditingCell({ col, value, onChange, onSave, onCancel }: EditingC
   };
 
   if (DATE_COLS.has(col)) {
-    return <input type="date" {...sharedInputProps} />;
+    return (
+      <CustomDateInput
+        value={value}
+        placeholder="Seleccionar fecha"
+        onChange={(nextValue) => {
+          onChange(nextValue);
+          onSave(nextValue);
+        }}
+      />
+    );
   }
 
   return <input {...sharedInputProps} />;

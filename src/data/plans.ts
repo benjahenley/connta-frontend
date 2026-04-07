@@ -54,7 +54,8 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=944eeb32955d49118c7ed93bf42396cc",
+    mpCheckoutUrl:
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=944eeb32955d49118c7ed93bf42396cc",
   },
   {
     id: SubscriptionTier.PROFESSIONAL,
@@ -79,7 +80,8 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=b9193874bdb4481489f9b17a657e16d2",
+    mpCheckoutUrl:
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=b9193874bdb4481489f9b17a657e16d2",
   },
   {
     id: SubscriptionTier.BUSINESS,
@@ -88,14 +90,14 @@ export const PLANS = [
     price: 75000,
     priceDisplay: "$ 75.000",
     priceSubtext: "+ IVA / mes",
-    invoicesDisplay: "1.000 facturas",
+    invoicesDisplay: "500 facturas",
     invoicesSubtext: "por mes",
     production: true,
     recommended: false,
     dark: false,
     contactSales: false,
     features: [
-      { label: "1.000 facturas / mes", ok: true },
+      { label: "500 facturas / mes", ok: true },
       { label: "Ambiente TEST (Homologacion)", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: true },
@@ -104,7 +106,8 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c4871f7530640bbb7535f01ec77c250",
+    mpCheckoutUrl:
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c4871f7530640bbb7535f01ec77c250",
   },
   {
     id: null,
@@ -113,8 +116,8 @@ export const PLANS = [
     price: -1,
     priceDisplay: "A medida",
     priceSubtext: "Contactar ventas",
-    invoicesDisplay: "Volumen ilimitado",
-    invoicesSubtext: "personalizado",
+    invoicesDisplay: "Volumen a medida",
+    invoicesSubtext: "",
     production: true,
     recommended: false,
     dark: true,

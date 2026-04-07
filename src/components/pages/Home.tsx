@@ -311,7 +311,7 @@ export default function HomePage() {
                 className="text-sm"
                 style={{ color: "rgba(255,255,255,0.65)" }}>
                 <span className="text-white font-semibold">
-                  +200 estudios contables
+                  +20 estudios contables
                 </span>{" "}
                 ya confían en nosotros
               </p>
@@ -615,19 +615,13 @@ export default function HomePage() {
           className="py-10 px-6 text-center"
           style={{ background: "#05090e" }}>
           <div className="flex items-center justify-center gap-3 mb-3">
-            <Image
-              src="/favicon.svg"
-              alt="Connta"
-              width={26}
-              height={26}
-            />
+            <Image src="/favicon.svg" alt="Connta" width={26} height={26} />
             <span className="font-semibold text-white tracking-tight">
               Connta
             </span>
           </div>
           <p className="text-sm" style={{ color: "#3d5566" }}>
-            © {new Date().getFullYear()} Connta. Todos los derechos
-            reservados.
+            © {new Date().getFullYear()} Connta. Todos los derechos reservados.
           </p>
         </footer>
       </div>
