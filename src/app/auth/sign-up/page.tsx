@@ -185,6 +185,7 @@ export default function SignUpPage() {
           setName(session.user.user_metadata?.name ?? "");
           setCuit(session.user.user_metadata?.cuit ?? "");
           setStep(3);
+          if (!cancelled) setIsBootstrapping(false);
           return;
         } catch (error) {
           if (cancelled) return;
@@ -200,10 +201,14 @@ export default function SignUpPage() {
       // No live session — fall back to sessionStorage for step 2 restore
       try {
         const raw = sessionStorage.getItem(SIGNUP_STORAGE_KEY);
-        if (!raw) return;
+        if (!raw) {
+          if (!cancelled) setIsBootstrapping(false);
+          return;
+        }
         const saved: SignupProgress = JSON.parse(raw);
         if (Date.now() - saved.otpSentAt > OTP_TTL_MS) {
           clearProgress();
+          if (!cancelled) setIsBootstrapping(false);
           return;
         }
         setEmail(saved.email);
