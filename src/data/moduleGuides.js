@@ -11,11 +11,11 @@ const moduleGuides = [
         number: 1,
         title: "Adherir WSASS en ARCA",
         description:
-          "Debes tener clave fiscal nivel 3 y adherir el servicio WSASS en el ambiente de homologación",
+          "Debes tener clave fiscal nivel 3 y habilitar los servicios necesarios en ARCA",
         tips: [
           "Accede a ARCA con tu clave fiscal nivel 3",
-          "Ve a 'Servicios con Clave Fiscal'",
-          "Adhiere el servicio WSASS (Homologación)",
+          "Ve a 'Administrador de Relaciones de Clave Fiscal'",
+          "Habilitá el servicio WSFEv1 (Factura Electrónica)",
         ],
       },
       {

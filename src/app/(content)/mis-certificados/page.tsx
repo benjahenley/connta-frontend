@@ -32,7 +32,7 @@ const STATUS = {
 } as const;
 
 const ENV = {
-  DEV: { label: "Homologación" },
+  DEV: { label: "Testing" },
   PROD: { label: "Producción" },
 } as const;
 

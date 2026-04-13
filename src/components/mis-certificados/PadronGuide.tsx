@@ -514,7 +514,7 @@ function TestingSteps({ onZoom }: { onZoom: (img: ZoomedImage) => void }) {
             <p className="g-sora text-xs text-gray-500 mt-1">
               Primero necesitás habilitar el servicio WSASS.{" "}
               <Link
-                href="/mis-certificados/guia/habilitar-testing#adherir-wsass"
+                href="/mis-certificados/guia/habilitar-produccion"
                 className="font-semibold hover:underline"
                 style={{ color: "#27a0c9" }}>
                 Ver cómo habilitarlo

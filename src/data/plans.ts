@@ -21,7 +21,7 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "5 facturas / mes", ok: true },
-      { label: "Ambiente TEST (Homologacion)", ok: true },
+      { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: false },
       { label: "Soporte prioritario", ok: false },
@@ -46,7 +46,7 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "50 facturas / mes", ok: true },
-      { label: "Ambiente TEST (Homologacion)", ok: true },
+      { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: true },
       { label: "Soporte por email", ok: true },
@@ -72,7 +72,7 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "200 facturas / mes", ok: true },
-      { label: "Ambiente TEST (Homologacion)", ok: true },
+      { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: true },
       { label: "Soporte prioritario", ok: true },
@@ -98,7 +98,7 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "500 facturas / mes", ok: true },
-      { label: "Ambiente TEST (Homologacion)", ok: true },
+      { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: true },
       { label: "Soporte prioritario", ok: true },
@@ -124,7 +124,7 @@ export const PLANS = [
     contactSales: true,
     features: [
       { label: "Volumen de facturas a medida", ok: true },
-      { label: "Ambiente TEST (Homologacion)", ok: true },
+      { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Acceso a Produccion (PROD)", ok: true },
       { label: "Soporte dedicado", ok: true },

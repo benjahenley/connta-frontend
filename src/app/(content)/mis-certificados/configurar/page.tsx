@@ -364,10 +364,9 @@ export default function ConfigurarCertificado() {
             <div className="mx-6 mt-5 flex items-start gap-3 rounded-lg bg-[#27a0c9]/8 border border-[#27a0c9]/20 px-4 py-3">
               <Info size={15} className="text-[#27a0c9] mt-0.5 flex-shrink-0" />
               <p className="text-sm text-gray-700">
-                Antes de continuar, habilitá <strong>WSASS</strong> (testing) o{" "}
-                <strong>WSAS</strong> (producción) en ARCA.{" "}
+                Antes de continuar, habilitá los servicios necesarios en ARCA.{" "}
                 <Link
-                  href="/mis-certificados/guia/habilitar-testing"
+                  href="/mis-certificados/guia/habilitar-produccion"
                   className="text-[#27a0c9] font-medium underline underline-offset-2">
                   Ver guía paso a paso →
                 </Link>
@@ -376,43 +375,7 @@ export default function ConfigurarCertificado() {
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="px-6 py-5 grid gap-5">
-                <Field
-                  label="Entorno"
-                  icon={Shield}
-                  tooltip="Homologación es para pruebas. Producción para facturación real.">
-                  <div className="flex gap-6 mt-0.5">
-                    <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
-                      <input
-                        type="radio"
-                        value="DEV"
-                        {...register("environment")}
-                        className="accent-[#27a0c9]"
-                      />
-                      Homologación (testing)
-                    </label>
-                    <button
-                      type="button"
-                      onClick={
-                        canUseProd ? undefined : () => openUpgradeModal()
-                      }
-                      className={`flex items-center gap-2 text-sm ${canUseProd ? "cursor-pointer text-gray-700" : "cursor-pointer text-gray-400"}`}>
-                      {canUseProd ? (
-                        <input
-                          type="radio"
-                          value="PROD"
-                          {...register("environment")}
-                          className="accent-[#27a0c9]"
-                        />
-                      ) : (
-                        <Lock
-                          size={13}
-                          className="text-gray-400 flex-shrink-0"
-                        />
-                      )}
-                      Producción
-                    </button>
-                  </div>
-                </Field>
+                <input type="hidden" value="PROD" {...register("environment")} />
 
                 <Field
                   label="CUIT del titular"

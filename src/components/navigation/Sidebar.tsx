@@ -45,8 +45,21 @@ export default function Sidebar() {
     const handleToggle = () => {
       if (window.innerWidth >= 1024) setIsCollapsed((prev) => !prev);
     };
+    const handleSetCollapsed = (
+      event: Event,
+    ) => {
+      if (window.innerWidth < 1024) return;
+      const nextCollapsed = (event as CustomEvent<boolean>).detail;
+      if (typeof nextCollapsed === "boolean") {
+        setIsCollapsed(nextCollapsed);
+      }
+    };
     window.addEventListener("toggleSidebar", handleToggle);
-    return () => window.removeEventListener("toggleSidebar", handleToggle);
+    window.addEventListener("setSidebarCollapsed", handleSetCollapsed);
+    return () => {
+      window.removeEventListener("toggleSidebar", handleToggle);
+      window.removeEventListener("setSidebarCollapsed", handleSetCollapsed);
+    };
   }, []);
 
   const TIER_ORDER = [SubscriptionTier.FREE, SubscriptionTier.STARTER, SubscriptionTier.PROFESSIONAL, SubscriptionTier.BUSINESS];

@@ -499,7 +499,7 @@ export default function PricingPage() {
                       ],
                     },
                     {
-                      label: "Ambiente TEST (Homologacion)",
+                      label: "Almacenamiento de certificados",
                       values: [true, true, true, true, true],
                     },
                     {

@@ -23,12 +23,6 @@ export const breadcrumbMappings: BreadcrumbMappings = {
     { url: "/mis-certificados", title: "Mis Certificados" },
     { url: null, title: "Guías" },
   ],
-  "/mis-certificados/guia/habilitar-testing": [
-    { url: "/dashboard", title: "Dashboard" },
-    { url: "/mis-certificados", title: "Mis Certificados" },
-    { url: "/mis-certificados/guia", title: "Guías" },
-    { url: null, title: "Habilitar certificado de testing" },
-  ],
   "/mis-certificados/guia/habilitar-produccion": [
     { url: "/dashboard", title: "Dashboard" },
     { url: "/mis-certificados", title: "Mis Certificados" },
@@ -40,12 +34,6 @@ export const breadcrumbMappings: BreadcrumbMappings = {
     { url: "/mis-certificados", title: "Mis Certificados" },
     { url: "/mis-certificados/guia", title: "Guías" },
     { url: null, title: "Habilitar consulta de domicilio fiscal" },
-  ],
-  "/mis-certificados/guia/habilitar-padron-testing": [
-    { url: "/dashboard", title: "Dashboard" },
-    { url: "/mis-certificados", title: "Mis Certificados" },
-    { url: "/mis-certificados/guia", title: "Guías" },
-    { url: null, title: "Habilitar padrón en testing" },
   ],
   "/mis-certificados/guia/habilitar-padron-produccion": [
     { url: "/dashboard", title: "Dashboard" },

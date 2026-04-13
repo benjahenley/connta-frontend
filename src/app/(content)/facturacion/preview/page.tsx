@@ -1136,7 +1136,6 @@ export default function FacturacionPreview() {
               <ValidationDetailsPanel
                 rows={visibleValidationRows}
                 failedInvoiceError={generateResult?.failedInvoiceError ?? null}
-                environment={environment}
                 onResolveAddresses={handleResolveAddresses}
                 isResolvingAddresses={isResolvingAddresses}
               />
@@ -1202,7 +1201,6 @@ export default function FacturacionPreview() {
               <CertContextBanner
                 certCompany={certCompany}
                 cuit={cuit}
-                environment={environment}
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1510,11 +1508,9 @@ function EmptyState({ onBack }: { onBack: () => void }) {
 function CertContextBanner({
   certCompany,
   cuit,
-  environment,
 }: {
   certCompany: string;
   cuit: string;
-  environment: "DEV" | "PROD";
 }) {
   return (
     <div
@@ -1550,13 +1546,10 @@ function CertContextBanner({
         <span
           className="fc-sora px-2 py-0.5 rounded-md text-xs font-bold"
           style={{
-            background:
-              environment === "PROD"
-                ? "rgba(15,23,42,.08)"
-                : "rgba(245,158,11,.13)",
-            color: environment === "PROD" ? "#0f172a" : "#92400e",
+            background: "rgba(15,23,42,.08)",
+            color: "#0f172a",
           }}>
-          {environment === "PROD" ? "Producción" : "Homologación"}
+          Producción
         </span>
       </div>
     </div>
@@ -1749,13 +1742,11 @@ const DescripcionField = forwardRef<
 function ValidationDetailsPanel({
   rows,
   failedInvoiceError,
-  environment,
   onResolveAddresses,
   isResolvingAddresses,
 }: {
   rows: VisibleValidationRow[];
   failedInvoiceError: string | null;
-  environment: "DEV" | "PROD";
   onResolveAddresses?: () => void;
   isResolvingAddresses?: boolean;
 }) {
@@ -1880,11 +1871,7 @@ function ValidationDetailsPanel({
                       </button>
                     )}
                     <a
-                      href={
-                        environment === "PROD"
-                          ? "/mis-certificados/guia/habilitar-padron-produccion"
-                          : "/mis-certificados/guia/habilitar-padron-testing"
-                      }
+                      href="/mis-certificados/guia/habilitar-padron-produccion"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-50 cursor-pointer">

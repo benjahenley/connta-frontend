@@ -59,11 +59,6 @@ export const ENV_CFG = {
     color: "#0f172a",
     bg: "rgba(15,23,42,.08)",
   },
-  homologacion: {
-    label: "Homologación",
-    color: "#92400e",
-    bg: "rgba(245,158,11,.13)",
-  },
 } as const;
 
 export function formatDate(iso: string) {

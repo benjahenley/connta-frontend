@@ -93,7 +93,7 @@ export function HistorySection({
               animDelay={i * 0.06}
               onOpen={() => onOpenSession(record)}
               onHide={
-                record.environment === "DEV" && onHideSession
+                onHideSession
                   ? () => setConfirmTarget(record)
                   : undefined
               }
@@ -120,9 +120,6 @@ export function HistorySection({
                     className={`${styles.condensed} text-lg font-bold text-gray-900`}>
                     Ocultar carga
                   </h3>
-                  <p className={`${styles.sora} text-xs text-gray-400`}>
-                    Homologación
-                  </p>
                 </div>
               </div>
 

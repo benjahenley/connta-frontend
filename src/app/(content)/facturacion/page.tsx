@@ -40,40 +40,18 @@ export default function Facturacion() {
   const { certs, certsLoading } = useCertificates();
   const { history, historyLoading, mutateHistory } = useUploadHistory();
 
-  const [selectedEnv, setSelectedEnv] = useState<"DEV" | "PROD">("DEV");
   const [selectedCert, setSelectedCert] = useState<CertData | null>(null);
   const [initialCertSet, setInitialCertSet] = useState(false);
 
   const activeCerts = certs.filter((c) => c.status === "ACTIVE");
-  const devCerts = activeCerts.filter((c) => c.environment === "DEV");
-  const prodCerts = activeCerts.filter((c) => c.environment === "PROD");
-  const certsForEnv = selectedEnv === "DEV" ? devCerts : prodCerts;
   const hasActiveCerts = activeCerts.length > 0;
 
   // Set initial cert selection once certs load
   useEffect(() => {
     if (initialCertSet || activeCerts.length === 0) return;
-    if (devCerts.length > 0) {
-      setSelectedEnv("DEV");
-      setSelectedCert(devCerts[0]);
-    } else if (prodCerts.length > 0) {
-      setSelectedEnv("PROD");
-      setSelectedCert(prodCerts[0]);
-    }
+    setSelectedCert(activeCerts[0]);
     setInitialCertSet(true);
-  }, [activeCerts, devCerts, prodCerts, initialCertSet]);
-
-  // Update selected cert when env changes
-  useEffect(() => {
-    const available = selectedEnv === "DEV" ? devCerts : prodCerts;
-    if (available.length > 0) {
-      if (!selectedCert || selectedCert.environment !== selectedEnv) {
-        setSelectedCert(available[0]);
-      }
-    } else {
-      setSelectedCert(null);
-    }
-  }, [selectedEnv]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeCerts, initialCertSet]);
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -103,6 +81,9 @@ export default function Facturacion() {
         sessionStorage.setItem(
           previewCacheKey(uploadSessionId),
           JSON.stringify(bootstrapPayload),
+        );
+        window.dispatchEvent(
+          new CustomEvent("setSidebarCollapsed", { detail: true }),
         );
         router.push(`/facturacion/preview?uploadSessionId=${encodeURIComponent(uploadSessionId)}`);
       } catch (e: unknown) {
@@ -223,11 +204,7 @@ export default function Facturacion() {
         ) : (
           <>
             <CertificateStep
-              selectedEnv={selectedEnv}
-              onSelectEnv={setSelectedEnv}
-              devCerts={devCerts}
-              prodCerts={prodCerts}
-              certsForEnv={certsForEnv}
+              certs={activeCerts}
               selectedCert={selectedCert}
               onSelectCert={setSelectedCert}
             />

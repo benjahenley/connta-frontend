@@ -45,10 +45,7 @@ export function CertAuthorizationsModal({ cert, onClose }: Props) {
   const serviceAction = (service: string) => {
     if (service === "ws_sr_constancia_inscripcion") {
       return {
-        href:
-          cert.environment === "PROD"
-            ? "/mis-certificados/guia/habilitar-padron-produccion"
-            : "/mis-certificados/guia/habilitar-padron-testing",
+        href: "/mis-certificados/guia/habilitar-padron-produccion",
         label: "Cómo habilitar",
       };
     }
@@ -82,8 +79,7 @@ export function CertAuthorizationsModal({ cert, onClose }: Props) {
                   Servicios habilitados
                 </h3>
                 <p className="mc-sora text-xs text-gray-400 mt-0.5">
-                  {formatCuit(cert.cuit)} ·{" "}
-                  {cert.environment === "PROD" ? "Producción" : "Homologación"}
+                  {formatCuit(cert.cuit)} · Producción
                 </p>
               </div>
             </div>

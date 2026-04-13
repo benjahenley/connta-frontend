@@ -175,7 +175,7 @@ export default function GuiaFacturacion() {
                       <strong className="text-gray-800">
                         certificado ARCA activo
                       </strong>{" "}
-                      (homologación o producción)
+                      configurado en la plataforma
                     </li>
                     <li>
                       • Archivo de facturas en formato{" "}
@@ -201,65 +201,16 @@ export default function GuiaFacturacion() {
               animClass="g-anim-4">
               <p className="g-sora text-gray-600 leading-relaxed mb-5">
                 Al ingresar a la sección de Facturación, el primer paso es
-                elegir con qué certificado vas a operar. Los certificados están
-                organizados en dos ambientes:
+                elegir con qué certificado vas a operar. Las facturas generadas son{" "}
+                <strong className="text-gray-700">
+                  reales y quedan registradas en ARCA
+                </strong>
+                , así que confirmá todos los datos antes de generar.
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-3 mb-6">
-                <div
-                  className="rounded-xl p-4 g-sora"
-                  style={{
-                    background: "rgba(39,160,201,.05)",
-                    border: "1px solid rgba(39,160,201,.15)",
-                  }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <FlaskConical
-                      className="h-4 w-4"
-                      style={{ color: "#27a0c9" }}
-                    />
-                    <p className="font-semibold text-sm text-gray-800">
-                      Homologación (Testing)
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    Las facturas generadas en este ambiente son de prueba y{" "}
-                    <strong className="text-gray-700">
-                      no tienen validez fiscal
-                    </strong>
-                    . Usalo para verificar que todo funcione correctamente antes
-                    de pasar a producción.
-                  </p>
-                </div>
-
-                <div
-                  className="rounded-xl p-4 g-sora"
-                  style={{
-                    background: "#f9fafb",
-                    border: "1px solid #e5e7eb",
-                  }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Factory
-                      className="h-4 w-4"
-                      style={{ color: "#6b7280" }}
-                    />
-                    <p className="font-semibold text-sm text-gray-800">
-                      Producción
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    Las facturas generadas acá son{" "}
-                    <strong className="text-gray-700">
-                      reales y quedan registradas en ARCA
-                    </strong>
-                    . Confirmá todos los datos antes de generar.
-                  </p>
-                </div>
-              </div>
-
               <p className="g-sora text-gray-600 leading-relaxed mb-4">
-                Seleccioná la solapa del ambiente y luego hacé click sobre la
-                tarjeta del certificado que querés usar. Una vez seleccionado, se
-                habilitará la zona de carga del archivo.
+                Hacé click sobre la tarjeta del certificado que querés usar.
+                Una vez seleccionado, se habilitará la zona de carga del archivo.
               </p>
 
               <div
@@ -725,19 +676,16 @@ export default function GuiaFacturacion() {
                   Listo para facturar
                 </div>
                 <h3 className="g-sora text-2xl md:text-3xl font-bold text-white mb-3 leading-snug">
-                  Empezá con
-                  <br />
-                  Homologación primero
+                  Empezá a facturar
                 </h3>
                 <p
                   className="g-sora text-sm leading-relaxed mb-8 max-w-md"
                   style={{ color: "rgba(255,255,255,.55)" }}>
-                  Antes de emitir facturas reales, probá el flujo completo en el
-                  ambiente de{" "}
+                  Ya conocés el flujo completo. Asegurate de tener tu{" "}
                   <strong style={{ color: "rgba(255,255,255,.8)" }}>
-                    testing (homologación)
+                    certificado de producción configurado
                   </strong>{" "}
-                  para asegurarte de que todo funcione correctamente.
+                  y empezá a emitir comprobantes electrónicos.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Link
@@ -751,14 +699,14 @@ export default function GuiaFacturacion() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link
-                    href="/mis-certificados/guia/habilitar-testing"
+                    href="/mis-certificados/guia/habilitar-produccion"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl g-sora font-semibold text-sm transition-all duration-200 hover:brightness-110"
                     style={{
                       background: "rgba(255,255,255,.1)",
                       color: "rgba(255,255,255,.75)",
                     }}>
                     <BadgeCheck className="h-4 w-4" />
-                    Configurar certificado testing
+                    Configurar certificado
                   </Link>
                 </div>
               </div>

@@ -23,10 +23,10 @@ export default function Dashboard() {
       id: "certificados",
       title: "Mis Certificados",
       description:
-        "Configurá y gestioná tus certificados de homologación y producción.",
+        "Configurá y gestioná tus certificados digitales de ARCA.",
       icon: FileKey2,
       href: "/mis-certificados",
-      features: ["Homologación", "Producción", "Gestión automática"],
+      features: ["Producción", "Gestión automática", "Almacenamiento seguro"],
     },
     {
       id: "facturacion",

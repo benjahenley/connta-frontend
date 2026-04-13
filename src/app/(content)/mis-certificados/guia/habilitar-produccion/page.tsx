@@ -196,9 +196,6 @@ export default function HabilitarAdministradorProduccion() {
                     Ambiente de producción — facturas con validez fiscal real
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
-                    <li>
-                      • Asegurate de haber probado todo en homologación primero
-                    </li>
                     <li>• CUIT + Clave Fiscal con nivel de seguridad 3</li>
                     <li>• Acceso al Administrador de Relaciones habilitado</li>
                     <li>• Tener el CSR generado desde Connta</li>

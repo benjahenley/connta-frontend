@@ -362,8 +362,7 @@ export default function HistorialDetailPage() {
       }
     : null;
 
-  const envKey = detail?.environment === "PROD" ? "produccion" : "homologacion";
-  const envCfg = ENV_CFG[envKey];
+  const envCfg = ENV_CFG.produccion;
 
   // Which invoices to show in the primary table
   const primaryInvoices = isFailed
