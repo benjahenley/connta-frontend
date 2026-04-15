@@ -144,7 +144,11 @@ export default function Navbar() {
               {/* Trigger button */}
               <button
                 onClick={() => setMenuOpen((o) => !o)}
-                className="nb-sora flex h-full items-center gap-2 lg:px-3 rounded-lg hover:bg-gray-50 transition-colors">
+                className={`nb-sora flex items-center gap-2 px-2 sm:px-2.5 py-1.5 rounded-full border transition-all duration-200 cursor-pointer ${
+                  menuOpen
+                    ? "bg-[rgba(39,160,201,0.08)] border-[rgba(39,160,201,0.2)]"
+                    : "border-transparent hover:bg-gray-50 hover:border-gray-200"
+                }`}>
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
                   style={{

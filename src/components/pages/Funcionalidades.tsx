@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   FileSpreadsheet,
@@ -127,17 +128,6 @@ export default function FuncionalidadesPage() {
           <div className="fn-hero-overlay absolute inset-0" />
 
           <div className="relative z-10 w-full max-w-5xl mx-auto px-6 md:px-10 py-28 flex flex-col items-center text-center">
-            <div
-              className="fn-au fn-d1 inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold tracking-widest uppercase"
-              style={{
-                background: "rgba(39,160,201,.15)",
-                color: "#7dd3ee",
-                border: "1px solid rgba(39,160,201,.25)",
-              }}>
-              <Sparkles className="w-3.5 h-3.5" />
-              Roadmap 2026
-            </div>
-
             <h1 className="fn-au fn-d2 fn-display text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
               El estudio contable
               <br />
@@ -303,7 +293,7 @@ export default function FuncionalidadesPage() {
               {[
                 {
                   phase: "Fase 1",
-                  period: "Q2 2025",
+                  period: "Q2 2026",
                   title: "Base contable",
                   active: true,
                   items: [
@@ -324,7 +314,7 @@ export default function FuncionalidadesPage() {
                 },
                 {
                   phase: "Fase 2",
-                  period: "Q3 2025",
+                  period: "Q3 2026",
                   title: "Declaraciones",
                   active: false,
                   items: [
@@ -345,7 +335,7 @@ export default function FuncionalidadesPage() {
                 },
                 {
                   phase: "Fase 3",
-                  period: "Q4 2025",
+                  period: "Q4 2026",
                   title: "Gestión del estudio",
                   active: false,
                   items: [
@@ -366,7 +356,7 @@ export default function FuncionalidadesPage() {
                 },
                 {
                   phase: "Fase 4",
-                  period: "2026",
+                  period: "2027",
                   title: "Automatización total",
                   active: false,
                   future: true,
@@ -492,22 +482,47 @@ export default function FuncionalidadesPage() {
 
         {/* ── CTA FINAL ─────────────────────────────────────────── */}
         <section className="py-28 px-6 md:px-10 bg-white">
-          <div data-reveal className="max-w-2xl mx-auto text-center">
-            <h2 className="fn-display text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-5">
-              Empezá a automatizar
-              <br />
-              <span style={{ color: "#27a0c9" }}>tu estudio hoy.</span>
-            </h2>
-            <p className="fn-body text-gray-500 text-lg mb-10">
-              Gratis hasta 5 facturas por mes. Sin tarjeta de crédito.
-            </p>
-            <Link
-              href="/auth/sign-up"
-              className="fn-btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white"
-              style={{ background: "#27a0c9" }}>
-              Crear cuenta gratis
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+          <div
+            data-reveal
+            className="max-w-6xl mx-auto overflow-hidden rounded-[2rem] border border-[#d7e7ef] bg-[#f7fbfd] shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr] items-stretch">
+              <div className="relative min-h-[280px] lg:min-h-[520px]">
+                <Image
+                  src="/banner.jpg"
+                  alt="Estudio contable con planillas, calculadora y reportes financieros"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(8,15,22,0.04) 0%, rgba(8,15,22,0.02) 48%, rgba(247,251,253,0.12) 100%)",
+                  }}
+                />
+              </div>
+
+              <div className="flex items-center">
+                <div className="w-full px-8 py-12 text-center lg:px-14 lg:py-16 lg:text-left">
+                  <h2 className="fn-display text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-5">
+                    Empezá a automatizar
+                    <br />
+                    <span style={{ color: "#27a0c9" }}>tu estudio hoy.</span>
+                  </h2>
+                  <p className="fn-body text-gray-500 text-lg mb-10 max-w-xl mx-auto lg:mx-0">
+                    Gratis hasta 5 facturas por mes. Sin tarjeta de crédito.
+                  </p>
+                  <Link
+                    href="/auth/sign-up"
+                    className="fn-btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white"
+                    style={{ background: "#27a0c9" }}>
+                    Crear cuenta gratis
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </div>

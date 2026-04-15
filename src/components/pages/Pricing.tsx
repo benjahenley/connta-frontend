@@ -52,6 +52,11 @@ export default function PricingPage() {
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+        .font-display { font-family: 'Fraunces', serif; }
+        .font-body    { font-family: 'DM Sans', sans-serif; }
+
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0);    }
@@ -102,20 +107,8 @@ export default function PricingPage() {
           />
 
           <div className="relative z-10 max-w-3xl mx-auto">
-            <span
-              className="fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-6 border"
-              style={{
-                animationDelay: "0ms",
-                background: "rgba(39,160,201,0.12)",
-                borderColor: "rgba(39,160,201,0.35)",
-                color: "#7dd3fc",
-              }}>
-              <Shield className="w-3.5 h-3.5" />
-              Integración certificada ARCA
-            </span>
-
             <h1
-              className="fade-up text-5xl md:text-6xl font-extrabold leading-tight text-white mb-5"
+              className="fade-up font-display text-5xl md:text-6xl font-bold leading-tight text-white mb-5"
               style={{ animationDelay: "80ms", letterSpacing: "-0.025em" }}>
               Planes simples.
               <br />
@@ -436,19 +429,13 @@ export default function PricingPage() {
               );
             })}
           </div>
-
-          {/* PROD badge note */}
-          <p className="text-center text-sm text-slate-400 mt-8">
-            *Los planes pagos incluyen acceso al ambiente de producción de ARCA.
-            El plan Free solo accede al ambiente de test.*
-          </p>
         </section>
 
         {/* ── Feature Comparison Table ────────────────────────────── */}
         <section className="py-20 px-6 bg-white">
           <div className="max-w-5xl mx-auto">
             <h2
-              className="text-3xl font-bold text-center mb-2"
+              className="font-display text-3xl md:text-4xl font-bold text-center mb-2"
               style={{ color: "#0f172a", letterSpacing: "-0.02em" }}>
               Compará todos los planes
             </h2>
@@ -501,10 +488,6 @@ export default function PricingPage() {
                     {
                       label: "Almacenamiento de certificados",
                       values: [true, true, true, true, true],
-                    },
-                    {
-                      label: "Acceso a Produccion ARCA",
-                      values: [false, true, true, true, true],
                     },
                     {
                       label: "Almacenamiento de CAE",
@@ -576,7 +559,7 @@ export default function PricingPage() {
         <section className="py-20 px-6" style={{ background: "#f8fafc" }}>
           <div className="max-w-3xl mx-auto">
             <h2
-              className="text-3xl font-bold text-center mb-2"
+              className="font-display text-3xl md:text-4xl font-bold text-center mb-2"
               style={{ color: "#0f172a", letterSpacing: "-0.02em" }}>
               Preguntas frecuentes
             </h2>
@@ -613,7 +596,7 @@ export default function PricingPage() {
           />
           <div className="relative z-10 max-w-2xl mx-auto">
             <h2
-              className="text-4xl font-extrabold text-white mb-4"
+              className="font-display text-4xl md:text-5xl font-bold text-white mb-4"
               style={{ letterSpacing: "-0.025em" }}>
               ¿Listo para automatizar tu facturación?
             </h2>

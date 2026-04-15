@@ -3,7 +3,15 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MessageCircle, Instagram, ArrowRight, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  Mail,
+  MessageCircle,
+  Instagram,
+  ArrowRight,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
 const channels = [
   {
@@ -63,7 +71,9 @@ export default function ContactoPage() {
   const [formEmail, setFormEmail] = useState("");
   const [formMessage, setFormMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +84,11 @@ export default function ContactoPage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: formName, email: formEmail, message: formMessage }),
+        body: JSON.stringify({
+          name: formName,
+          email: formEmail,
+          message: formMessage,
+        }),
       });
 
       if (!res.ok) {
@@ -207,7 +221,6 @@ export default function ContactoPage() {
       `}</style>
 
       <div className="ct-body min-h-screen bg-white text-gray-900 overflow-x-hidden">
-
         {/* ── HERO ── */}
         <section
           className="relative flex min-h-[52vh] flex-col items-center justify-center px-6 py-24 text-center overflow-hidden"
@@ -220,22 +233,17 @@ export default function ContactoPage() {
           <div className="ct-grid-lines absolute inset-0" />
 
           <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto">
-            <Image
-              src="/favicon.svg"
-              alt="Connta"
-              className="ct-au ct-d1 mb-8 drop-shadow-2xl"
-              width={64}
-              height={64}
-            />
-            <p className="ct-au ct-d2 text-xs font-bold uppercase tracking-[0.18em] mb-4" style={{ color: "#7dd3fc" }}>
-              Contacto
-            </p>
             <h1 className="ct-display ct-au ct-d3 text-4xl md:text-6xl font-bold leading-tight text-white mb-5">
               Estamos para{" "}
-              <em className="not-italic" style={{ color: "#7dd3fc" }}>ayudarte</em>
+              <em className="not-italic" style={{ color: "#7dd3fc" }}>
+                ayudarte
+              </em>
             </h1>
-            <p className="ct-au ct-d4 max-w-xl text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
-              Escribinos por email o WhatsApp. Nuestro equipo responde rápido para que no pierdas tiempo.
+            <p
+              className="ct-au ct-d4 max-w-xl text-lg leading-relaxed"
+              style={{ color: "rgba(255,255,255,0.65)" }}>
+              Escribinos por email o WhatsApp. Nuestro equipo responde rápido
+              para que no pierdas tiempo.
             </p>
           </div>
         </section>
@@ -243,48 +251,74 @@ export default function ContactoPage() {
         {/* ── CHANNELS + FORM ── */}
         <section className="py-24 px-6 bg-white">
           <div className="max-w-5xl mx-auto space-y-6">
-
             {/* Channel cards — 2 columns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {channels.map(({ icon: Icon, iconColor, shadowColor, bg, title, description, value, href, cta }, i) => (
-                <div
-                  key={i}
-                  data-reveal
-                  data-delay={String(i + 1)}
-                  className="ct-channel-card group relative rounded-2xl border bg-white p-8 overflow-hidden"
-                  style={{
-                    borderColor: "#e5e7eb",
-                    ["--channel-shadow" as string]: shadowColor,
-                  }}>
+              {channels.map(
+                (
+                  {
+                    icon: Icon,
+                    iconColor,
+                    shadowColor,
+                    bg,
+                    title,
+                    description,
+                    value,
+                    href,
+                    cta,
+                  },
+                  i,
+                ) => (
                   <div
-                    className="absolute top-0 right-0 w-32 h-32 rounded-bl-[64px] opacity-[0.05]"
-                    style={{ background: `linear-gradient(135deg, ${iconColor}, #10b981)` }}
-                  />
+                    key={i}
+                    data-reveal
+                    data-delay={String(i + 1)}
+                    className="ct-channel-card group relative rounded-2xl border bg-white p-8 overflow-hidden"
+                    style={{
+                      borderColor: "#e5e7eb",
+                      ["--channel-shadow" as string]: shadowColor,
+                    }}>
+                    <div
+                      className="absolute top-0 right-0 w-32 h-32 rounded-bl-[64px] opacity-[0.05]"
+                      style={{
+                        background: `linear-gradient(135deg, ${iconColor}, #10b981)`,
+                      }}
+                    />
 
-                  <div
-                    className="ct-icon mb-5 h-14 w-14 rounded-xl flex items-center justify-center"
-                    style={{ background: bg }}>
-                    <Icon className="h-7 w-7" style={{ color: iconColor }} />
+                    <div
+                      className="ct-icon mb-5 h-14 w-14 rounded-xl flex items-center justify-center"
+                      style={{ background: bg }}>
+                      <Icon className="h-7 w-7" style={{ color: iconColor }} />
+                    </div>
+
+                    <h3 className="ct-display text-xl font-bold text-gray-900 mb-1">
+                      {title}
+                    </h3>
+                    <p
+                      className="text-sm leading-relaxed mb-4"
+                      style={{ color: "#6b7280" }}>
+                      {description}
+                    </p>
+                    <p
+                      className="text-sm font-semibold mb-5"
+                      style={{ color: iconColor }}>
+                      {value}
+                    </p>
+
+                    <Link
+                      href={href}
+                      target={href.startsWith("http") ? "_blank" : undefined}
+                      rel={
+                        href.startsWith("http")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      className="ct-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                      style={{ background: iconColor }}>
+                      {cta} <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
-
-                  <h3 className="ct-display text-xl font-bold text-gray-900 mb-1">{title}</h3>
-                  <p className="text-sm leading-relaxed mb-4" style={{ color: "#6b7280" }}>
-                    {description}
-                  </p>
-                  <p className="text-sm font-semibold mb-5" style={{ color: iconColor }}>
-                    {value}
-                  </p>
-
-                  <Link
-                    href={href}
-                    target={href.startsWith("http") ? "_blank" : undefined}
-                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="ct-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
-                    style={{ background: iconColor }}>
-                    {cta} <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              ))}
+                ),
+              )}
             </div>
 
             {/* Contact form card — full width */}
@@ -295,23 +329,38 @@ export default function ContactoPage() {
               style={{ borderColor: "#e5e7eb" }}>
               <div
                 className="absolute top-0 right-0 w-48 h-48 rounded-bl-[96px] opacity-[0.04]"
-                style={{ background: "linear-gradient(135deg, #27a0c9, #10b981)" }}
+                style={{
+                  background: "linear-gradient(135deg, #27a0c9, #10b981)",
+                }}
               />
 
               <div className="relative">
-                <div className="mb-6 h-14 w-14 rounded-xl flex items-center justify-center" style={{ background: "#eff9fd" }}>
+                <div
+                  className="mb-6 h-14 w-14 rounded-xl flex items-center justify-center"
+                  style={{ background: "#eff9fd" }}>
                   <Send className="h-7 w-7" style={{ color: "#27a0c9" }} />
                 </div>
 
-                <h3 className="ct-display text-xl font-bold text-gray-900 mb-1">Envianos un mensaje</h3>
-                <p className="text-sm leading-relaxed mb-6" style={{ color: "#6b7280" }}>
+                <h3 className="ct-display text-xl font-bold text-gray-900 mb-1">
+                  Envianos un mensaje
+                </h3>
+                <p
+                  className="text-sm leading-relaxed mb-6"
+                  style={{ color: "#6b7280" }}>
                   Completá el formulario y te respondemos a la brevedad.
                 </p>
 
                 {submitStatus === "success" ? (
-                  <div className="flex items-start gap-3 p-4 rounded-xl border" style={{ background: "#f0fdf4", borderColor: "#bbf7d0" }}>
-                    <CheckCircle2 className="h-5 w-5 mt-0.5 shrink-0" style={{ color: "#10b981" }} />
-                    <p className="text-sm font-medium" style={{ color: "#065f46" }}>
+                  <div
+                    className="flex items-start gap-3 p-4 rounded-xl border"
+                    style={{ background: "#f0fdf4", borderColor: "#bbf7d0" }}>
+                    <CheckCircle2
+                      className="h-5 w-5 mt-0.5 shrink-0"
+                      style={{ color: "#10b981" }}
+                    />
+                    <p
+                      className="text-sm font-medium"
+                      style={{ color: "#065f46" }}>
                       ¡Mensaje enviado! Te respondemos pronto.
                     </p>
                   </div>
@@ -365,20 +414,45 @@ export default function ContactoPage() {
                     </div>
 
                     {submitStatus === "error" && (
-                      <div className="flex items-start gap-3 p-3 rounded-xl border mb-4" style={{ background: "#fef2f2", borderColor: "#fecaca" }}>
-                        <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" style={{ color: "#ef4444" }} />
+                      <div
+                        className="flex items-start gap-3 p-3 rounded-xl border mb-4"
+                        style={{
+                          background: "#fef2f2",
+                          borderColor: "#fecaca",
+                        }}>
+                        <AlertCircle
+                          className="h-4 w-4 mt-0.5 shrink-0"
+                          style={{ color: "#ef4444" }}
+                        />
                         <p className="text-sm" style={{ color: "#991b1b" }}>
                           Hubo un error al enviar. Intentá de nuevo.
                         </p>
                       </div>
                     )}
 
-                    <button type="submit" className="ct-submit-btn" disabled={isSubmitting}>
+                    <button
+                      type="submit"
+                      className="ct-submit-btn"
+                      disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                          <svg
+                            className="animate-spin h-4 w-4"
+                            viewBox="0 0 24 24"
+                            fill="none">
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v8H4z"
+                            />
                           </svg>
                           Enviando...
                         </>
@@ -392,7 +466,6 @@ export default function ContactoPage() {
                 )}
               </div>
             </div>
-
           </div>
         </section>
 
@@ -400,10 +473,16 @@ export default function ContactoPage() {
         <section className="py-20 px-6" style={{ background: "#f8fafc" }}>
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <p data-reveal className="text-xs font-bold uppercase tracking-[0.18em] mb-3" style={{ color: "#27a0c9" }}>
+              <p
+                data-reveal
+                className="text-xs font-bold uppercase tracking-[0.18em] mb-3"
+                style={{ color: "#27a0c9" }}>
                 Preguntas frecuentes
               </p>
-              <h2 data-reveal data-delay="1" className="ct-display text-3xl md:text-4xl font-bold text-gray-900">
+              <h2
+                data-reveal
+                data-delay="1"
+                className="ct-display text-3xl md:text-4xl font-bold text-gray-900">
                 Respuestas rápidas
               </h2>
             </div>
@@ -430,7 +509,11 @@ export default function ContactoPage() {
                   className="bg-white rounded-2xl border p-6"
                   style={{ borderColor: "#e5e7eb" }}>
                   <h4 className="font-semibold text-gray-900 mb-2">{q}</h4>
-                  <p className="text-sm leading-relaxed" style={{ color: "#6b7280" }}>{a}</p>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "#6b7280" }}>
+                    {a}
+                  </p>
                 </div>
               ))}
             </div>
@@ -442,25 +525,47 @@ export default function ContactoPage() {
           <div
             className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
-              backgroundImage: "radial-gradient(ellipse at 50% 80%, rgba(39,160,201,0.5) 0%, transparent 60%)",
+              backgroundImage:
+                "radial-gradient(ellipse at 50% 80%, rgba(39,160,201,0.5) 0%, transparent 60%)",
             }}
           />
           <div className="relative z-10 max-w-2xl mx-auto">
-            <p data-reveal className="text-xs font-bold uppercase tracking-[0.18em] mb-5" style={{ color: "#27a0c9" }}>
+            <p
+              data-reveal
+              className="text-xs font-bold uppercase tracking-[0.18em] mb-5"
+              style={{ color: "#27a0c9" }}>
               ¿Listo para empezar?
             </p>
-            <h2 data-reveal data-delay="1" className="ct-display text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            <h2
+              data-reveal
+              data-delay="1"
+              className="ct-display text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
               Automatizá tu facturación{" "}
-              <em className="not-italic" style={{ color: "#7dd3fc" }}>hoy mismo.</em>
+              <em className="not-italic" style={{ color: "#7dd3fc" }}>
+                hoy mismo.
+              </em>
             </h2>
-            <div data-reveal data-delay="2" className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div
+              data-reveal
+              data-delay="2"
+              className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/sign-up">
-                <button className="ct-cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg" style={{ background: "#27a0c9" }}>
+                <button
+                  className="ct-cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                  style={{ background: "#27a0c9" }}>
                   Crear cuenta gratuita <ArrowRight className="h-5 w-5" />
                 </button>
               </Link>
-              <a href="https://wa.me/5491527398316" target="_blank" rel="noopener noreferrer">
-                <button className="px-8 py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}>
+              <a
+                href="https://wa.me/5491527398316"
+                target="_blank"
+                rel="noopener noreferrer">
+                <button
+                  className="px-8 py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200"
+                  style={{
+                    background: "rgba(255,255,255,0.08)",
+                    backdropFilter: "blur(8px)",
+                  }}>
                   Hablar por WhatsApp
                 </button>
               </a>
@@ -469,10 +574,14 @@ export default function ContactoPage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="py-10 px-6 text-center" style={{ background: "#05090e" }}>
+        <footer
+          className="py-10 px-6 text-center"
+          style={{ background: "#05090e" }}>
           <div className="flex items-center justify-center gap-3 mb-3">
             <Image src="/favicon.svg" alt="Connta" width={26} height={26} />
-            <span className="font-semibold text-white tracking-tight">Connta</span>
+            <span className="font-semibold text-white tracking-tight">
+              Connta
+            </span>
           </div>
           <p className="text-sm" style={{ color: "#3d5566" }}>
             © {new Date().getFullYear()} Connta. Todos los derechos reservados.

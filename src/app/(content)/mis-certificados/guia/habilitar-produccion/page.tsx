@@ -193,12 +193,12 @@ export default function HabilitarAdministradorProduccion() {
                 />
                 <div>
                   <p className="font-semibold text-gray-800 mb-2">
-                    Ambiente de producción — facturas con validez fiscal real
+                    Antes de empezar vas a necesitar
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• CUIT + Clave Fiscal con nivel de seguridad 3</li>
-                    <li>• Acceso al Administrador de Relaciones habilitado</li>
-                    <li>• Tener el CSR generado desde Connta</li>
+                    <li>• <strong className="text-gray-800">CUIT y Clave Fiscal</strong> nivel 3</li>
+                    <li>• Acceso al <strong className="text-gray-800">Administrador de Relaciones</strong> en ARCA</li>
+                    <li>• Un <strong className="text-gray-800">CSR</strong> generado desde Connta</li>
                   </ul>
                 </div>
               </div>
@@ -540,7 +540,7 @@ export default function HabilitarAdministradorProduccion() {
               showConnector={false}
               animClass="g-anim-6">
               <div
-                className="flex items-start gap-3 px-4 py-4 rounded-xl mb-6 g-sora text-sm text-gray-700"
+                className="flex items-start gap-3 px-4 py-4 rounded-xl mb-5 g-sora text-sm text-gray-700"
                 style={{
                   background: "rgba(245,158,11,.07)",
                   border: "1px solid rgba(245,158,11,.25)",
@@ -550,15 +550,24 @@ export default function HabilitarAdministradorProduccion() {
                   style={{ color: "#d97706" }}
                 />
                 <div>
-                  <strong className="text-gray-800 block mb-1">
-                    El Punto de Venta de &quot;Comprobante en Línea&quot; no es
-                    el mismo
+                  <strong className="text-gray-800 block mb-2">
+                    Connta necesita un PDV de tipo &quot;RECE&quot; — tenés que
+                    crearlo sí o sí
                   </strong>
-                  Si ya emitís facturas desde la web de ARCA, eso usa un tipo de
-                  PDV diferente (&quot;Comprobante en Línea&quot;). Para usar
-                  Connta necesitás un PDV de tipo{" "}
-                  <strong className="text-gray-800">RECE</strong> — es un
-                  trámite de un minuto.
+                  <p className="mb-2">
+                    No importa si sos empresa o persona física, ni si ya tenés
+                    otros PDV activos: para usar Connta vas a crear un{" "}
+                    <strong className="text-gray-800">PDV nuevo</strong> de tipo{" "}
+                    <strong className="text-gray-800">
+                      RECE (web services)
+                    </strong>
+                    . Podés tenerlo en paralelo a los que ya usás.
+                  </p>
+                  <p className="mb-1 text-xs text-gray-500">
+                    El PDV de &quot;Comprobante en Línea&quot; (el que usás para
+                    facturar desde la web de ARCA) es otro tipo distinto y no
+                    sirve para apps como Connta.
+                  </p>
                 </div>
               </div>
 
@@ -576,9 +585,9 @@ export default function HabilitarAdministradorProduccion() {
                   <strong className="text-gray-800">
                     No uses &quot;PVE - Gestión de Puntos de Venta&quot;
                   </strong>{" "}
-                  — ese servicio es solo para empresas que representás como
-                  apoderado. Para tu propio CUIT necesitás el servicio que se
-                  describe a continuación.
+                  — es un servicio legacy que queda para casos muy específicos
+                  (apoderados gestionando otros CUITs). Para el tuyo usá el
+                  servicio del paso siguiente.
                 </span>
               </div>
 
