@@ -137,7 +137,6 @@ function PlansStep({
   onClose: () => void;
 }) {
   const currentIdx = TIER_ORDER.indexOf(currentTier);
-
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Header */}
@@ -196,22 +195,6 @@ function PlansStep({
                       ? "0 8px 24px -6px rgba(39,160,201,0.18)"
                       : "0 1px 3px rgba(0,0,0,0.05)",
                 }}>
-                {/* Badges */}
-                {isCurrent && (
-                  <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold text-white whitespace-nowrap"
-                    style={{ background: "#27a0c9" }}>
-                    Plan actual
-                  </div>
-                )}
-                {plan.recommended && !isCurrent && (
-                  <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold text-white whitespace-nowrap"
-                    style={{ background: "#27a0c9" }}>
-                    Recomendado
-                  </div>
-                )}
-
                 <div className="p-5 flex flex-col flex-1">
                   {/* Plan icon + name */}
                   <div className="flex items-center gap-2.5 mb-4">

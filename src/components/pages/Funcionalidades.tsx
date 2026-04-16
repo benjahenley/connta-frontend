@@ -15,7 +15,6 @@ import {
   Brain,
   FileText,
   Download,
-  Sparkles,
 } from "lucide-react";
 
 export default function FuncionalidadesPage() {

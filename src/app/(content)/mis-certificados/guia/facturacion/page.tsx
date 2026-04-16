@@ -12,8 +12,6 @@ import {
   XCircle,
   FileSpreadsheet,
   ShieldAlert,
-  FlaskConical,
-  Factory,
   Eye,
   Zap,
   AlertCircle,

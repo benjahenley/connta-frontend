@@ -48,7 +48,8 @@ export default function PricingPage() {
   const isAuthenticated = !!user;
   const currentTier = user?.subscriptionTier ?? SubscriptionTier.FREE;
   const currentIdx = TIER_ORDER.indexOf(currentTier);
-
+  const hideRecommendedBadge =
+    isAuthenticated && currentTier === SubscriptionTier.BUSINESS;
   return (
     <>
       <style>{`
@@ -152,12 +153,17 @@ export default function PricingPage() {
                 isAuthenticated && !!plan.id && plan.id === currentTier;
               const isDowngrade =
                 isAuthenticated && !plan.contactSales && planIdx < currentIdx;
-
+              const applyRecommendedStyle = plan.recommended && !isDowngrade;
+              const showRecommendedBadge =
+                plan.recommended &&
+                !isCurrent &&
+                !hideRecommendedBadge &&
+                !isDowngrade;
               return (
                 <div
                   key={plan.id ?? plan.name}
                   className={`fade-up plan-card relative flex flex-col rounded-2xl ${
-                    plan.recommended || isCurrent
+                    applyRecommendedStyle || isCurrent
                       ? "recommended border-2 bg-white"
                       : plan.dark
                         ? "dark-card border"
@@ -166,14 +172,14 @@ export default function PricingPage() {
                   style={{
                     animationDelay: `${i * 90}ms`,
                     borderColor:
-                      isCurrent || plan.recommended
+                      isCurrent || applyRecommendedStyle
                         ? "#27a0c9"
                         : plan.dark
                           ? "#1e293b"
                           : "#e2e8f0",
                     background: plan.dark ? "#0f172a" : undefined,
                     boxShadow:
-                      isCurrent || plan.recommended
+                      isCurrent || applyRecommendedStyle
                         ? "0 12px 32px -8px rgba(39,160,201,0.20)"
                         : "0 1px 3px rgba(0,0,0,0.06)",
                     opacity: isDowngrade ? 0.4 : 1,
@@ -186,7 +192,7 @@ export default function PricingPage() {
                       Plan actual
                     </div>
                   ) : (
-                    plan.recommended && (
+                    showRecommendedBadge && (
                       <div
                         className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold tracking-wide text-white whitespace-nowrap"
                         style={{ background: "#27a0c9" }}>
@@ -203,7 +209,7 @@ export default function PricingPage() {
                         style={{
                           background: plan.dark
                             ? "rgba(39,160,201,0.15)"
-                            : plan.recommended
+                            : applyRecommendedStyle
                               ? "rgba(39,160,201,0.10)"
                               : "rgba(0,0,0,0.04)",
                         }}>
@@ -211,7 +217,7 @@ export default function PricingPage() {
                           className="w-5 h-5"
                           style={{
                             color:
-                              plan.dark || plan.recommended
+                              plan.dark || applyRecommendedStyle
                                 ? "#27a0c9"
                                 : "#475569",
                           }}
@@ -237,35 +243,8 @@ export default function PricingPage() {
                       <div
                         className="text-sm mt-1"
                         style={{ color: plan.dark ? "#94a3b8" : "#64748b" }}>
-                        {plan.priceSubtext}
+                        {/* {plan.priceSubtext} */}
                       </div>
-                    </div>
-
-                    {/* Invoice count highlight */}
-                    <div
-                      className="flex items-baseline gap-1.5 px-4 py-3 rounded-xl mb-6"
-                      style={{
-                        background: plan.dark
-                          ? "rgba(39,160,201,0.10)"
-                          : plan.recommended
-                            ? "rgba(39,160,201,0.07)"
-                            : "rgba(0,0,0,0.03)",
-                      }}>
-                      <span
-                        className="text-lg font-bold"
-                        style={{
-                          color:
-                            plan.dark || plan.recommended
-                              ? "#27a0c9"
-                              : "#334155",
-                        }}>
-                        {plan.invoicesDisplay}
-                      </span>
-                      <span
-                        className="text-sm"
-                        style={{ color: plan.dark ? "#64748b" : "#94a3b8" }}>
-                        {plan.invoicesSubtext}
-                      </span>
                     </div>
 
                     {/* Features */}
@@ -458,13 +437,6 @@ export default function PricingPage() {
                           color: p.recommended ? "#27a0c9" : "#0f172a",
                         }}>
                         {p.name}
-                        {p.recommended && (
-                          <span
-                            className="block text-xs font-normal mt-0.5"
-                            style={{ color: "#27a0c9" }}>
-                            ★ Recomendado
-                          </span>
-                        )}
                       </th>
                     ))}
                   </tr>
@@ -506,8 +478,8 @@ export default function PricingPage() {
                       values: [false, false, true, true, true],
                     },
                     {
-                      label: "Multi-CUIT",
-                      values: [false, false, false, true, true],
+                      label: "CUITs incluidos",
+                      values: ["1", "1", "2", "5", "A medida"],
                     },
                   ].map((row, ri) => (
                     <tr

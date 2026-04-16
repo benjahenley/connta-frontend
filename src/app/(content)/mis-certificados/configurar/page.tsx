@@ -24,16 +24,12 @@ import {
   Hash,
   Info,
   Loader2,
-  Lock,
   Shield,
   Upload,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
 import { afipApi } from "@/services/afip";
-import { useAuth } from "@/components/providers/AuthProvider";
-import { useUpgrade } from "@/components/providers/UpgradeProvider";
-import { SubscriptionTier } from "@/types/auth";
 
 const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
@@ -183,9 +179,6 @@ function Field({
 export default function ConfigurarCertificado() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
-  const { openUpgradeModal } = useUpgrade();
-  const canUseProd = user?.subscriptionTier !== SubscriptionTier.FREE;
 
   const [resumeLoading, setResumeLoading] = useState(() => !!searchParams.get("resume"));
   const [serverError, setServerError] = useState<string | null>(null);

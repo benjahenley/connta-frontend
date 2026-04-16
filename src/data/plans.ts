@@ -70,10 +70,10 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "200 facturas / mes", ok: true },
+      { label: "Hasta 2 CUITs", ok: true },
       { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Soporte prioritario", ok: true },
-      { label: "Multi-CUIT", ok: false },
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
@@ -95,10 +95,10 @@ export const PLANS = [
     contactSales: false,
     features: [
       { label: "500 facturas / mes", ok: true },
+      { label: "Hasta 5 CUITs", ok: true },
       { label: "Almacenamiento de certificados", ok: true },
       { label: "Almacenamiento de CAE", ok: true },
       { label: "Soporte prioritario", ok: true },
-      { label: "Multi-CUIT", ok: true },
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
