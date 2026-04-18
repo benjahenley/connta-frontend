@@ -1,11 +1,23 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Inter } from "next/font/google";
+import { Barlow_Condensed, Inter, Sora } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { RouteScrollManager } from "@/components/providers/RouteScrollManager";
 
 const inter = Inter({ subsets: ["latin"] });
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  display: "swap",
+  variable: "--font-condensed",
+});
+const sora = Sora({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-sora",
+});
 
 export const metadata: Metadata = {
   title: "Connta AR - Flujos Contables",
@@ -24,7 +36,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} ${barlowCondensed.variable} ${sora.variable}`}>
         <AuthProvider>
           <Suspense fallback={null}>
             <RouteScrollManager />

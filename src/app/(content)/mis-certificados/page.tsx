@@ -38,10 +38,8 @@ const ENV = {
 
 /* ── Styles ───────────────────────────────────────────────────── */
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap');
-
-  .mc-condensed { font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif; }
-  .mc-sora      { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+  .mc-condensed { font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif; }
+  .mc-sora      { font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif; }
 
   @keyframes mcFadeUp {
     from { opacity: 0; transform: translateY(10px); }

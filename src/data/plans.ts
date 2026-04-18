@@ -53,7 +53,7 @@ export const PLANS = [
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
     mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=944eeb32955d49118c7ed93bf42396cc",
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=8bb30111a41d4357a0bc1d7b5bdb4a8a",
   },
   {
     id: SubscriptionTier.PROFESSIONAL,
@@ -78,7 +78,7 @@ export const PLANS = [
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
     mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=b9193874bdb4481489f9b17a657e16d2",
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2f1ec71f3e544867a3a51aa33483c2a3",
   },
   {
     id: SubscriptionTier.BUSINESS,
@@ -103,7 +103,7 @@ export const PLANS = [
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
     mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c4871f7530640bbb7535f01ec77c250",
+      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=3a98b350616e4a38912a18def54cb6eb",
   },
   {
     id: null,

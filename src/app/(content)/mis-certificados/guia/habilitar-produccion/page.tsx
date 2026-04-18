@@ -70,10 +70,8 @@ export default function HabilitarAdministradorProduccion() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap');
-
-        .g-condensed { font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif; }
-        .g-sora      { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+        .g-condensed { font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif; }
+        .g-sora      { font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif; }
 
         .g-img-card {
           box-shadow: 0 2px 16px rgba(39,160,201,.10), 0 1px 3px rgba(0,0,0,.06);

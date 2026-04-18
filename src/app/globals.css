@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
@@ -268,10 +267,10 @@ body {
 }
 
 .db-condensed {
-  font-family: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif;
 }
 .db-sora {
-  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
 }
 
 @keyframes dbFadeUp {

@@ -75,8 +75,7 @@ function GuiasIndexContent() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap');
-        .gi-sora { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+        .gi-sora { font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif; }
 
         @keyframes giFadeUp {
           from { opacity:0; transform:translateY(12px); }

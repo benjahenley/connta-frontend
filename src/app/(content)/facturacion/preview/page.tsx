@@ -1076,9 +1076,8 @@ export default function FacturacionPreview() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Sora:wght@400;500;600;700&display=swap');
-        .fc-condensed { font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif; }
-        .fc-sora      { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+        .fc-condensed { font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif; }
+        .fc-sora      { font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif; }
         @keyframes fcFadeUp {
           from { opacity:0; transform:translateY(12px); }
           to   { opacity:1; transform:translateY(0); }

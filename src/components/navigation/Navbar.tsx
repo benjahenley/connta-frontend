@@ -92,8 +92,7 @@ export default function Navbar() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Sora:wght@400;500;600&display=swap');
-        .nb-sora  { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+        .nb-sora  { font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif; }
 
         @keyframes nbMenuIn {
           from { opacity: 0; transform: translateY(-6px) scale(.98); }

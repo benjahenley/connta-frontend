@@ -1,9 +1,9 @@
 .sora {
-  font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
 }
 
 .condensed {
-  font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif;
 }
 
 @keyframes fadeUp {
