@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, ArrowLeft, Shield, ExternalLink } from "lucide-react";
 import { PLANS } from "@/data/plans";
 import { SubscriptionTier } from "@/types/auth";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 const PAID_TIERS: SubscriptionTier[] = [
   SubscriptionTier.STARTER,
@@ -15,6 +16,7 @@ const PAID_TIERS: SubscriptionTier[] = [
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuth();
 
   const tierParam = searchParams.get("plan")?.toUpperCase() as SubscriptionTier | null;
   const isPaidTier = (tier: string | null | undefined): tier is SubscriptionTier =>
@@ -23,7 +25,11 @@ export default function CheckoutPage() {
     (p) => p.id === tierParam && isPaidTier(p.id) && p.mpCheckoutUrl
   );
 
-  if (!plan || !plan.mpCheckoutUrl) {
+  const checkoutHref = plan?.mpCheckoutUrl && user?.id
+    ? `${plan.mpCheckoutUrl}&external_reference=${encodeURIComponent(user.id)}`
+    : plan?.mpCheckoutUrl ?? null;
+
+  if (!plan || !checkoutHref) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center p-8">
@@ -124,7 +130,7 @@ export default function CheckoutPage() {
 
           {/* CTA — direct link to MP subscription checkout */}
           <Link
-            href={plan.mpCheckoutUrl}
+            href={checkoutHref}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2.5 w-full py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
