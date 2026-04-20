@@ -16,7 +16,7 @@ const PAID_TIERS: SubscriptionTier[] = [
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const tierParam = searchParams.get("plan")?.toUpperCase() as SubscriptionTier | null;
   const isPaidTier = (tier: string | null | undefined): tier is SubscriptionTier =>
@@ -25,9 +25,19 @@ export default function CheckoutPage() {
     (p) => p.id === tierParam && isPaidTier(p.id) && p.mpCheckoutUrl
   );
 
+  // Block until auth is resolved — without user.id we can't attach external_reference
+  // to the MP checkout URL, which breaks the webhook → user mapping on the backend.
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="loader-3d" />
+      </div>
+    );
+  }
+
   const checkoutHref = plan?.mpCheckoutUrl && user?.id
     ? `${plan.mpCheckoutUrl}&external_reference=${encodeURIComponent(user.id)}`
-    : plan?.mpCheckoutUrl ?? null;
+    : null;
 
   if (!plan || !checkoutHref) {
     return (
