@@ -1,11 +1,11 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { Check, ArrowLeft, Shield, ExternalLink } from "lucide-react";
 import { PLANS } from "@/data/plans";
 import { SubscriptionTier } from "@/types/auth";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { paymentsApi } from "@/services/payments";
 
 const PAID_TIERS: SubscriptionTier[] = [
   SubscriptionTier.STARTER,
@@ -38,6 +38,24 @@ export default function CheckoutPage() {
   const checkoutHref = plan?.mpCheckoutUrl && user?.id
     ? `${plan.mpCheckoutUrl}&external_reference=${encodeURIComponent(user.id)}`
     : null;
+
+  const preapprovalPlanId = (() => {
+    if (!plan?.mpCheckoutUrl) return null;
+    try {
+      return new URL(plan.mpCheckoutUrl).searchParams.get("preapproval_plan_id");
+    } catch {
+      return null;
+    }
+  })();
+
+  const handleSubscribe = async () => {
+    if (!checkoutHref || !plan || !preapprovalPlanId) return;
+    await paymentsApi.recordCheckoutAttempt(
+      plan.id as SubscriptionTier,
+      preapprovalPlanId,
+    );
+    window.open(checkoutHref, "_blank", "noopener,noreferrer");
+  };
 
   if (!plan || !checkoutHref) {
     return (
@@ -138,11 +156,9 @@ export default function CheckoutPage() {
             </ul>
           </div>
 
-          {/* CTA — direct link to MP subscription checkout */}
-          <Link
-            href={checkoutHref}
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* CTA — records checkout attempt, then opens MP in new tab */}
+          <button
+            onClick={handleSubscribe}
             className="flex items-center justify-center gap-2.5 w-full py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
             style={{
               background: "linear-gradient(135deg, #009ee3 0%, #0077b6 100%)",
@@ -155,7 +171,7 @@ export default function CheckoutPage() {
             </div>
             Suscribirme con Mercado Pago
             <ExternalLink size={13} className="opacity-70" />
-          </Link>
+          </button>
 
           {/* Trust line */}
           <div className="flex items-center justify-center gap-2 mt-4 text-xs text-gray-400">

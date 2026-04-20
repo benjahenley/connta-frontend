@@ -2,7 +2,10 @@
 
 import { useAuth } from "@/components/providers/AuthProvider";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { useRouter } from "next/navigation";
+import { paymentsApi } from "@/services/payments";
+import { SubscriptionStatus } from "@/types/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import {
   FileKey2,
   LayoutDashboard,
@@ -10,13 +13,57 @@ import {
   BarChart3,
   Users,
   ArrowRight,
+  CheckCircle,
   Clock,
   Receipt,
+  X,
 } from "lucide-react";
 
+const CHECK_NOW_INTERVAL_MS = 3000;
+const CHECK_NOW_MAX_POLLS = 10;
+
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [showActivatedToast, setShowActivatedToast] = useState(false);
+  const pollStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (searchParams.get("subscribed") !== "true") return;
+    if (pollStartedRef.current) return;
+    pollStartedRef.current = true;
+
+    let polls = 0;
+    let cancelled = false;
+
+    const runPoll = async () => {
+      polls += 1;
+      const res = await paymentsApi.checkNow();
+      if (cancelled) return;
+
+      if (res?.subscriptionStatus === SubscriptionStatus.ACTIVE) {
+        await refreshUser();
+        if (cancelled) return;
+        setShowActivatedToast(true);
+        router.replace("/dashboard");
+        return;
+      }
+
+      if (polls >= CHECK_NOW_MAX_POLLS) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      window.setTimeout(runPoll, CHECK_NOW_INTERVAL_MS);
+    };
+
+    void runPoll();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams, refreshUser, router]);
 
   const modules = [
     {
@@ -93,6 +140,32 @@ export default function Dashboard() {
 
   return (
     <>
+      {showActivatedToast && (
+        <div
+          role="status"
+          className="fixed top-6 right-6 z-50 flex items-start gap-3 bg-white border border-emerald-200 shadow-lg rounded-xl p-4 pr-10 max-w-sm animate-in fade-in slide-in-from-top-2">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(16,185,129,0.12)" }}>
+            <CheckCircle size={18} style={{ color: "#10b981" }} />
+          </div>
+          <div className="pt-0.5">
+            <p className="db-sora text-sm font-semibold text-gray-900">
+              ¡Suscripción activa!
+            </p>
+            <p className="db-sora text-xs text-gray-500 mt-0.5">
+              Tu plan fue activado correctamente.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowActivatedToast(false)}
+            aria-label="Cerrar"
+            className="absolute top-2.5 right-2.5 text-gray-300 hover:text-gray-500 transition-colors">
+            <X size={14} />
+          </button>
+        </div>
+      )}
       <div className="db-sora max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {/* ── Greeting ─────────────────────────────────────────── */}
         <PageHeader
