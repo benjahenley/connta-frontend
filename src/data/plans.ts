@@ -1,6 +1,11 @@
 import { Gift, Rocket, Zap, Building2, Crown } from "lucide-react";
 import { SubscriptionTier } from "@/types/auth";
 
+const MP_CHECKOUT_BASE = "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=";
+
+const mpUrl = (planId: string | undefined) =>
+  planId ? `${MP_CHECKOUT_BASE}${planId}` : null;
+
 /**
  * Single source of truth for plan data.
  * Used by UpgradeModal and the public Pricing page.
@@ -52,8 +57,7 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=87072929f00249eb97321eadc5289c1e",
+    mpCheckoutUrl: mpUrl(process.env.NEXT_PUBLIC_MP_PLAN_STARTER_ID),
   },
   {
     id: SubscriptionTier.PROFESSIONAL,
@@ -77,8 +81,7 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=cb134be031474832bf1c473b38e17109",
+    mpCheckoutUrl: mpUrl(process.env.NEXT_PUBLIC_MP_PLAN_PROFESSIONAL_ID),
   },
   {
     id: SubscriptionTier.BUSINESS,
@@ -102,8 +105,7 @@ export const PLANS = [
     ],
     cta: "Comenzar ahora",
     href: "/auth/sign-up",
-    mpCheckoutUrl:
-      "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=32a6d4c74da84fa1b9331d0c61d1fb6d",
+    mpCheckoutUrl: mpUrl(process.env.NEXT_PUBLIC_MP_PLAN_BUSINESS_ID),
   },
   {
     id: null,
