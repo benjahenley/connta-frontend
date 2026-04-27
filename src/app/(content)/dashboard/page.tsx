@@ -151,10 +151,10 @@ export default function Dashboard() {
           </div>
           <div className="pt-0.5">
             <p className="db-sora text-sm font-semibold text-gray-900">
-              ¡Suscripción activa!
+              ¡Bienvenido a Connta!
             </p>
             <p className="db-sora text-xs text-gray-500 mt-0.5">
-              Tu plan fue activado correctamente.
+              Tu suscripción fue activada correctamente.
             </p>
           </div>
           <button

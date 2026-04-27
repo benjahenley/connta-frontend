@@ -48,13 +48,27 @@ export default function CheckoutPage() {
     }
   })();
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = () => {
     if (!checkoutHref || !plan || !preapprovalPlanId) return;
-    await paymentsApi.recordCheckoutAttempt(
+
+    // Open MP synchronously inside the click handler so mobile browsers
+    // don't flag it as a non-user-initiated popup.
+    const popup = window.open(checkoutHref, "_blank", "noopener,noreferrer");
+
+    // Fire-and-forget — backend polling reconciles even if this fails.
+    void paymentsApi.recordCheckoutAttempt(
       plan.id as SubscriptionTier,
       preapprovalPlanId,
     );
-    window.open(checkoutHref, "_blank", "noopener,noreferrer");
+
+    if (popup) {
+      // Desktop / mobile-with-popups → send the original tab to the dashboard
+      // so its polling kicks in and shows the welcome toast on success.
+      router.replace("/dashboard?subscribed=true");
+    } else {
+      // Popup blocked (some mobile browsers) → fall back to same-tab redirect.
+      window.location.href = checkoutHref;
+    }
   };
 
   if (!plan || !checkoutHref) {
