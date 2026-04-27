@@ -51,22 +51,18 @@ export default function CheckoutPage() {
   const handleSubscribe = () => {
     if (!checkoutHref || !plan || !preapprovalPlanId) return;
 
-    // Open MP synchronously inside the click handler so mobile browsers
-    // don't flag it as a non-user-initiated popup.
+    // window.open must run synchronously inside the click handler, otherwise
+    // mobile browsers block it as a non-user-initiated popup.
     const popup = window.open(checkoutHref, "_blank", "noopener,noreferrer");
 
-    // Fire-and-forget — backend polling reconciles even if this fails.
+    // keepalive lets this POST survive a same-tab navigation. The original tab
+    // is NOT preemptively redirected — MP's back_url handles the return path.
     void paymentsApi.recordCheckoutAttempt(
       plan.id as SubscriptionTier,
       preapprovalPlanId,
     );
 
-    if (popup) {
-      // Desktop / mobile-with-popups → send the original tab to the dashboard
-      // so its polling kicks in and shows the welcome toast on success.
-      router.replace("/dashboard?subscribed=true");
-    } else {
-      // Popup blocked (some mobile browsers) → fall back to same-tab redirect.
+    if (!popup) {
       window.location.href = checkoutHref;
     }
   };

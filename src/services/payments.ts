@@ -29,6 +29,7 @@ export const paymentsApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ tier, preapprovalPlanId }),
+        keepalive: true,
       });
       if (!res.ok) return null;
       return res.json();
