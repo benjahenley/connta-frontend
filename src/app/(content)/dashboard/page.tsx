@@ -19,8 +19,8 @@ import {
   X,
 } from "lucide-react";
 
-const CHECK_NOW_INTERVAL_MS = 3000;
-const CHECK_NOW_MAX_POLLS = 10;
+const CHECK_NOW_INTERVAL_MS = 5000;
+const CHECK_NOW_MAX_POLLS = 60;
 
 export default function Dashboard() {
   const { user, refreshUser } = useAuth();
