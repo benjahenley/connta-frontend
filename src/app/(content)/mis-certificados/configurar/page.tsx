@@ -51,7 +51,7 @@ const schema = z.object({
     .string()
     .min(3, "Al menos 3 caracteres")
     .regex(/^[A-Za-z0-9]+$/, "Solo letras y números, sin espacios"),
-  environment: z.enum(["DEV", "PROD"]),
+  environment: z.literal("PROD"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -184,7 +184,6 @@ export default function ConfigurarCertificado() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [csrText, setCsrText] = useState<string | null>(null);
   const [certRecordId, setCertRecordId] = useState<string | null>(null);
-  const [submittedEnv, setSubmittedEnv] = useState<"DEV" | "PROD" | null>(null);
   const [copied, setCopied] = useState(false);
 
   const [showUpload, setShowUpload] = useState(false);
@@ -203,7 +202,7 @@ export default function ConfigurarCertificado() {
     watch,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { environment: "DEV" },
+    defaultValues: { environment: "PROD" },
     mode: "onChange",
   });
 
@@ -225,10 +224,9 @@ export default function ConfigurarCertificado() {
   useEffect(() => {
     const resumeId = searchParams.get("resume");
     if (!resumeId) return;
-    afipApi.getCsr(resumeId).then(({ csrText, environment }) => {
+    afipApi.getCsr(resumeId).then(({ csrText }) => {
       setCsrText(csrText);
       setCertRecordId(resumeId);
-      setSubmittedEnv(environment);
     }).catch(() => {
       // cert not found or not pending — fall through to step 1
     }).finally(() => {
@@ -243,11 +241,10 @@ export default function ConfigurarCertificado() {
         cuit: onlyDigits(values.cuit),
         companyName: values.companyName,
         certName: values.certName,
-        environment: values.environment,
+        environment: "PROD",
       });
       setCsrText(result.csrText);
       setCertRecordId(result.certRecordId);
-      setSubmittedEnv(values.environment);
     } catch (err: unknown) {
       setServerError(err instanceof Error ? err.message : "Ocurrió un error inesperado");
     }
@@ -373,7 +370,7 @@ export default function ConfigurarCertificado() {
                 <Field
                   label="CUIT del titular"
                   icon={Hash}
-                  tooltip="En testing usá tu propio CUIT para evitar confusiones."
+                  tooltip="Usá el CUIT del titular que va a operar en producción."
                   error={errors.cuit?.message}>
                   <Input
                     inputMode="numeric"
@@ -403,7 +400,7 @@ export default function ConfigurarCertificado() {
                   tooltip="Identificador en ARCA. Solo letras y números, sin espacios."
                   error={errors.certName?.message}>
                   <Input
-                    placeholder="CertTest1"
+                    placeholder="CertProd1"
                     {...register("certName")}
                     className="font-mono"
                   />
@@ -469,8 +466,7 @@ export default function ConfigurarCertificado() {
                 </p>
                 <p className="text-sm text-emerald-700 mt-0.5">
                   Copiá el texto y pegalo en <strong>ARCA → WSASS</strong>{" "}
-                  (testing) o <strong>WSAS</strong> (producción) para obtener el
-                  certificado firmado.
+                  de producción para obtener el certificado firmado.
                 </p>
               </div>
             </div>
@@ -481,14 +477,12 @@ export default function ConfigurarCertificado() {
                   Texto del CSR
                 </span>
                 <div className="flex items-center gap-2">
-                  {submittedEnv === "PROD" && (
-                    <button
-                      onClick={handleDownloadCsr}
-                      className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-gray-200 text-gray-600 hover:border-[#27a0c9] hover:text-[#27a0c9] transition-all">
-                      <Download size={12} />
-                      Descargar .csr
-                    </button>
-                  )}
+                  <button
+                    onClick={handleDownloadCsr}
+                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-gray-200 text-gray-600 hover:border-[#27a0c9] hover:text-[#27a0c9] transition-all">
+                    <Download size={12} />
+                    Descargar .csr
+                  </button>
                   <button
                     onClick={handleCopy}
                     className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-all ${

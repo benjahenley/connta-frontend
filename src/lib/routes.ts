@@ -8,9 +8,9 @@ const PUBLIC_ROUTES = new Set([
   "/auth/forgot-password",
   "/auth/reset-password",
   "/backend-offline",
+  "/server-error",
 ]);
 
 export function isPublicRoute(pathname: string) {
   return PUBLIC_ROUTES.has(pathname) || pathname.startsWith("/auth/");
 }
-

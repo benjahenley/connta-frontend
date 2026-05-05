@@ -5,7 +5,7 @@ export interface GenerateCsrPayload {
   cuit: string;
   companyName: string;
   certName: string;
-  environment: "DEV" | "PROD";
+  environment: "PROD";
 }
 
 export interface GenerateCsrResponse {
@@ -109,6 +109,15 @@ export interface UploadSessionDetail extends UploadSessionSummary {
     autoFilledFields?: string | null;
     hasErrors?: boolean;
   }>;
+}
+
+export interface InvoiceBrandingStatus {
+  hasLogo: boolean;
+  logoOriginalName: string | null;
+  logoMimeType: string | null;
+  logoPositionX: number;
+  logoPositionY: number;
+  updatedAt: string | null;
 }
 
 export interface UpdatedInvoicePayload {
@@ -227,7 +236,7 @@ class AfipApi {
     return res.json();
   }
 
-  async getCsr(certRecordId: string): Promise<{ csrText: string; environment: "DEV" | "PROD" }> {
+  async getCsr(certRecordId: string): Promise<{ csrText: string; environment: "PROD" }> {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/certificates/${certRecordId}/csr`,
       { headers: await authHeaders() },
@@ -552,6 +561,107 @@ class AfipApi {
     return res.json();
   }
 
+  async getInvoiceBranding(): Promise<InvoiceBrandingStatus> {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding`,
+      { headers: await authHeaders() },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al obtener el logo de factura");
+    }
+    return res.json();
+  }
+
+  async uploadInvoiceLogo(file: File): Promise<InvoiceBrandingStatus> {
+    const token = await getToken();
+    const formData = new FormData();
+    formData.append("logo", file);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding/logo`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al subir el logo");
+    }
+    return res.json();
+  }
+
+  async deleteInvoiceLogo(): Promise<InvoiceBrandingStatus> {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding/logo`,
+      { method: "DELETE", headers: await authHeaders() },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al eliminar el logo");
+    }
+    return res.json();
+  }
+
+  async updateInvoiceLogoPosition(
+    logoPositionX: number,
+    logoPositionY: number,
+  ): Promise<InvoiceBrandingStatus> {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding`,
+      {
+        method: "PATCH",
+        headers: await authHeaders(),
+        body: JSON.stringify({ logoPositionX, logoPositionY }),
+      },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al guardar la posición del logo");
+    }
+    return res.json();
+  }
+
+  async getInvoiceLogoObjectUrl(): Promise<string | null> {
+    const token = await getToken();
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding/logo`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (res.status === 400 || res.status === 404) return null;
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al obtener el logo");
+    }
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  }
+
+  async getInvoiceBrandingPreviewUrl(): Promise<string> {
+    return this.getPdfObjectUrl(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/invoice-branding/preview`,
+    );
+  }
+
+  async getDevInvoicePdfPreviewUrl({
+    type,
+    longDescription,
+  }: {
+    type: "A" | "B" | "C";
+    longDescription: boolean;
+  }): Promise<string> {
+    const params = new URLSearchParams({
+      type,
+      longDescription: longDescription ? "1" : "0",
+      t: String(Date.now()),
+    });
+    return this.getPdfObjectUrl(
+      `${process.env.NEXT_PUBLIC_API_URL}/afip/dev/invoice-pdf-preview?${params}`,
+    );
+  }
+
   async verifyInvoice(invoiceId: string): Promise<InvoiceVerification> {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/afip/invoices/${invoiceId}/verify`,
@@ -608,6 +718,19 @@ class AfipApi {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  private async getPdfObjectUrl(url: string): Promise<string> {
+    const token = await getToken();
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Error al generar la vista previa");
+    }
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
   }
 }
 

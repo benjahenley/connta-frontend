@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import {
   Download,
@@ -11,6 +12,7 @@ import {
   FileText,
   Loader2,
   FileSpreadsheet,
+  FileImage,
   X,
   ChevronDown,
   RotateCcw,
@@ -395,6 +397,20 @@ export default function HistorialDetailPage() {
             description={detail?.fileName}
             actions={
               <>
+              {detail && stats && stats.success > 0 && (
+                <Link
+                  href="/facturacion/configuracion-factura"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                  style={{
+                    background: "white",
+                    color: "#334155",
+                    border: "1px solid #dbe4ea",
+                  }}>
+                  <FileImage className="w-4 h-4" />
+                  Logo de factura
+                </Link>
+              )}
+
               {/* Reintentar button — only for FAILED sessions */}
               {detail && isFailed && (
                 <button

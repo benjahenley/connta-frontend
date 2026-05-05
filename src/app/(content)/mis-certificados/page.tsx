@@ -31,11 +31,6 @@ const STATUS = {
   PENDING_CERT: { label: "Pendiente", dot: "#f59e0b" },
 } as const;
 
-const ENV = {
-  DEV: { label: "Testing" },
-  PROD: { label: "Producción" },
-} as const;
-
 /* ── Styles ───────────────────────────────────────────────────── */
 const STYLES = `
   .mc-condensed { font-family: var(--font-condensed), ui-sans-serif, system-ui, sans-serif; }
@@ -339,7 +334,6 @@ function CertCard({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const status = STATUS[cert.status];
-  const env = ENV[cert.environment];
 
   const formatCuit = (cuit: string) => {
     const c = cuit.replace(/\D/g, "");
@@ -398,17 +392,6 @@ function CertCard({
             className="mc-sora text-xs font-mono font-medium px-2.5 py-1 rounded-lg"
             style={{ background: "#f1f5f9", color: "#475569" }}>
             {formatCuit(cert.cuit)}
-          </span>
-          <span
-            className="mc-sora text-xs font-medium px-2.5 py-1 rounded-lg"
-            style={{
-              background:
-                cert.environment === "PROD"
-                  ? "rgba(16,185,129,.08)"
-                  : "rgba(245,158,11,.08)",
-              color: cert.environment === "PROD" ? "#065f46" : "#92400e",
-            }}>
-            {env.label}
           </span>
         </div>
 

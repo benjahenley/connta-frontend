@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import {
   ChevronRight,
-  Download,
   FileSpreadsheet,
   Trash2,
   AlertTriangle,
@@ -93,9 +92,7 @@ export function HistorySection({
               animDelay={i * 0.06}
               onOpen={() => onOpenSession(record)}
               onHide={
-                onHideSession
-                  ? () => setConfirmTarget(record)
-                  : undefined
+                onHideSession ? () => setConfirmTarget(record) : undefined
               }
             />
           ))}
@@ -205,13 +202,6 @@ function HistoryCard({
           </span>
 
           <div className="ml-auto flex items-center gap-1 sm:ml-1">
-            {uiStatus === "completado" && (
-              <button
-                title="Descargar reporte"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
-                <Download className="w-4 h-4" />
-              </button>
-            )}
             {onHide && (
               <button
                 onClick={(e) => {

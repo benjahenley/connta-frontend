@@ -4,6 +4,7 @@ import { Barlow_Condensed, Inter, Sora } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { RouteScrollManager } from "@/components/providers/RouteScrollManager";
+import { ServerErrorRedirectProvider } from "@/components/providers/ServerErrorRedirectProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const barlowCondensed = Barlow_Condensed({
@@ -38,12 +39,14 @@ export default function RootLayout({
     <html lang="es">
       <body
         className={`${inter.className} ${barlowCondensed.variable} ${sora.variable}`}>
-        <AuthProvider>
-          <Suspense fallback={null}>
-            <RouteScrollManager />
-          </Suspense>
-          {children}
-        </AuthProvider>
+        <ServerErrorRedirectProvider>
+          <AuthProvider>
+            <Suspense fallback={null}>
+              <RouteScrollManager />
+            </Suspense>
+            {children}
+          </AuthProvider>
+        </ServerErrorRedirectProvider>
       </body>
     </html>
   );
