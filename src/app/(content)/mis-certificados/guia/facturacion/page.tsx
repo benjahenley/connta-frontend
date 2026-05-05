@@ -321,11 +321,11 @@ export default function GuiaFacturacion() {
                 <p className="text-sm text-gray-600">
                   ¿No tenés el archivo armado?{" "}
                   <a
-                    href="/plantilla-facturas.csv"
-                    download="plantilla-facturas.csv"
+                    href="/plantilla-facturas.xlsx"
+                    download="plantilla-facturas.xlsx"
                     className="font-semibold hover:underline"
                     style={{ color: "#27a0c9" }}>
-                    Descargá la plantilla CSV con todas las columnas
+                    Descargá la plantilla Excel con todas las columnas
                   </a>
                   .
                 </p>

@@ -264,8 +264,8 @@ export function UploadStep({
       {!isScanning && (
         <div className="mt-3 flex justify-center">
           <a
-            href="/plantilla-facturas.csv"
-            download="plantilla-facturas.csv"
+            href="/plantilla-facturas.xlsx"
+            download="plantilla-facturas.xlsx"
             className={`${styles.sora} text-center text-xs font-medium hover:underline`}
             style={{ color: "#27a0c9" }}>
             Descargar plantilla con columnas recomendadas
