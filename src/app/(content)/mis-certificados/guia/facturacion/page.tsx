@@ -325,7 +325,7 @@ export default function GuiaFacturacion() {
                     download="plantilla-facturas.xlsx"
                     className="font-semibold hover:underline"
                     style={{ color: "#27a0c9" }}>
-                    Descargá la plantilla Excel con todas las columnas
+                    Descargá la plantilla Excel con los encabezados reconocidos
                   </a>
                   .
                 </p>
