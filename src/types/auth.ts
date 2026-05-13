@@ -33,6 +33,7 @@ export interface AuthUser {
   subscriptionStatus?: SubscriptionStatus;
   currentEnvironment?: Environment;
   gracePeriodEndsAt?: string | null;
+  trialEndsAt?: string | null;
   localUserId?: number;
 }
 

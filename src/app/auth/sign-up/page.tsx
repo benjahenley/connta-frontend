@@ -135,6 +135,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [emailTaken, setEmailTaken] = useState(false);
+  const [cuitTaken, setCuitTaken] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -302,9 +303,26 @@ export default function SignUpPage() {
     setIsLoading(true);
     setError("");
     setEmailTaken(false);
+    setCuitTaken(false);
     try {
-      // Check auth.users for this email before doing anything
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+      // Reject upfront if this CUIT is already registered (one trial per CUIT)
+      if (apiUrl && cuit.length === 11) {
+        const cuitRes = await fetch(
+          `${apiUrl}/user/exists/cuit/${encodeURIComponent(cuit)}`,
+        );
+        if (cuitRes.ok) {
+          const { exists } = await cuitRes.json();
+          if (exists) {
+            setCuitTaken(true);
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
+      // Check auth.users for this email before doing anything
       if (apiUrl) {
         const res = await fetch(
           `${apiUrl}/user/otp-status/${encodeURIComponent(email)}`,
@@ -644,6 +662,17 @@ export default function SignUpPage() {
               </div>
             )}
 
+            {cuitTaken && (
+              <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                Ya existe una cuenta registrada con ese CUIT.{" "}
+                <button
+                  onClick={() => router.push("/auth/sign-in")}
+                  className="font-semibold underline underline-offset-4 hover:no-underline">
+                  Iniciá sesión acá →
+                </button>
+              </div>
+            )}
+
             {error && step !== 3 && (
               <div className="mb-5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
@@ -716,9 +745,10 @@ export default function SignUpPage() {
                       required
                       inputMode="numeric"
                       value={formattedCuit}
-                      onChange={(e) =>
-                        setCuit(e.target.value.replace(/\D/g, "").slice(0, 11))
-                      }
+                      onChange={(e) => {
+                        setCuit(e.target.value.replace(/\D/g, "").slice(0, 11));
+                        setCuitTaken(false);
+                      }}
                       placeholder="20-12345678-9"
                       className="auth-input"
                     />

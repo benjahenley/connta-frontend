@@ -123,6 +123,8 @@ class AuthService {
             base.localUserId = backendUser.localUserId;
             base.cuit = backendUser.cuit ?? null;
             base.isSuperAdmin = backendUser.isSuperAdmin ?? false;
+            base.gracePeriodEndsAt = backendUser.gracePeriodEndsAt ?? null;
+            base.trialEndsAt = backendUser.trialEndsAt ?? null;
           } else if (res.status === 401) {
             // Backend rejected — user not registered in DB
             return null;
