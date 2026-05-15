@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../providers/AuthProvider";
-import { LogOut, ChevronDown, Hash, Crown } from "lucide-react";
+import { LogOut, ChevronDown, Hash, Crown, Menu, X } from "lucide-react";
 import { SUBSCRIPTION_TIERS, SubscriptionTier } from "@/types/auth";
 
 const formatCuit = (cuit: string) =>
@@ -19,7 +19,9 @@ export default function NavbarPublic() {
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isHome) return;
@@ -33,10 +35,17 @@ export default function NavbarPublic() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
+      if (mobileRef.current && !mobileRef.current.contains(e.target as Node)) {
+        setMobileOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     try {
@@ -55,7 +64,7 @@ export default function NavbarPublic() {
       .join("")
       .toUpperCase() || "U";
 
-  const transparent = isHome && !scrolled;
+  const transparent = isHome && !scrolled && !mobileOpen;
 
   return (
     <>
@@ -119,9 +128,9 @@ export default function NavbarPublic() {
         }
 
         .btn-ghost-light {
-          padding: 8px 18px;
+          padding: 7px 14px;
           border-radius: 8px;
-          font-size: 0.875rem;
+          font-size: 0.8125rem;
           font-weight: 600;
           color: rgba(255,255,255,0.85);
           border: 1px solid rgba(255,255,255,0.22);
@@ -136,9 +145,9 @@ export default function NavbarPublic() {
         }
 
         .btn-ghost-dark {
-          padding: 8px 18px;
+          padding: 7px 14px;
           border-radius: 8px;
-          font-size: 0.875rem;
+          font-size: 0.8125rem;
           font-weight: 600;
           color: #27a0c9;
           border: 1px solid #27a0c9;
@@ -153,9 +162,9 @@ export default function NavbarPublic() {
         }
 
         .btn-primary-nav {
-          padding: 8px 18px;
+          padding: 7px 14px;
           border-radius: 8px;
-          font-size: 0.875rem;
+          font-size: 0.8125rem;
           font-weight: 600;
           color: #fff;
           background: #27a0c9;
@@ -163,6 +172,12 @@ export default function NavbarPublic() {
           cursor: pointer;
           transition: all 0.2s ease;
           white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+          .btn-ghost-light, .btn-ghost-dark, .btn-primary-nav {
+            padding: 8px 18px;
+            font-size: 0.875rem;
+          }
         }
         .btn-primary-nav:hover {
           background: #1e7a9c;
@@ -174,10 +189,97 @@ export default function NavbarPublic() {
           from { opacity: 0; transform: translateY(-6px) scale(.98); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
+
+        .burger-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 38px;
+          height: 38px;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: background 0.15s ease, color 0.15s ease;
+          background: transparent;
+          border: 1px solid transparent;
+        }
+        .burger-btn-light {
+          color: #fff;
+          border-color: rgba(255,255,255,0.18);
+        }
+        .burger-btn-light:hover {
+          background: rgba(255,255,255,0.10);
+        }
+        .burger-btn-dark {
+          color: #1f2937;
+          border-color: rgba(0,0,0,0.08);
+        }
+        .burger-btn-dark:hover {
+          background: rgba(0,0,0,0.04);
+        }
+
+        @keyframes mobileMenuIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .mobile-menu-panel {
+          animation: mobileMenuIn .18s ease forwards;
+          background: #ffffff;
+          border-top: 1px solid rgba(0,0,0,0.06);
+          box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.18);
+        }
+        .mobile-nav-link {
+          display: block;
+          padding: 12px 4px;
+          font-size: 0.9375rem;
+          font-weight: 500;
+          color: #334155;
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+          transition: color 0.15s ease;
+        }
+        .mobile-nav-link:last-of-type {
+          border-bottom: none;
+        }
+        .mobile-nav-link:hover {
+          color: #27a0c9;
+        }
+        .mobile-nav-link-active {
+          color: #27a0c9;
+        }
+        .mobile-auth-btn-ghost {
+          flex: 1;
+          padding: 11px 14px;
+          border-radius: 10px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #27a0c9;
+          border: 1px solid #27a0c9;
+          background: transparent;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .mobile-auth-btn-ghost:hover {
+          background: rgba(39,160,201,0.08);
+        }
+        .mobile-auth-btn-primary {
+          flex: 1;
+          padding: 11px 14px;
+          border-radius: 10px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #fff;
+          background: #27a0c9;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .mobile-auth-btn-primary:hover {
+          background: #1e7a9c;
+        }
       `}</style>
 
       <header className={`navbar-root navbar-font-body ${transparent ? "transparent" : "solid"}`}>
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center gap-3.5 flex-shrink-0">
@@ -193,7 +295,7 @@ export default function NavbarPublic() {
               alt="Connta"
               width={122}
               height={22}
-              className={`brand-wordmark ${
+              className={`brand-wordmark hidden sm:block ${
                 transparent ? "brand-wordmark-light" : "brand-wordmark-dark"
               }`}
             />
@@ -299,7 +401,7 @@ export default function NavbarPublic() {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => router.push("/auth/sign-in")}
                 className={transparent ? "btn-ghost-light" : "btn-ghost-dark"}
@@ -315,7 +417,62 @@ export default function NavbarPublic() {
             </div>
           )}
 
+          {/* Mobile burger */}
+          <div className="md:hidden" ref={mobileRef}>
+            <button
+              aria-label="Abrir menú"
+              onClick={() => setMobileOpen((o) => !o)}
+              className={`burger-btn ${transparent ? "burger-btn-light" : "burger-btn-dark"}`}>
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+
         </div>
+
+        {/* Mobile dropdown panel */}
+        {mobileOpen && (
+          <div className="md:hidden mobile-menu-panel">
+            <div className="px-5 pt-2 pb-5">
+              <nav className="flex flex-col">
+                {[
+                  { label: "Inicio", href: "/" },
+                  { label: "Funcionalidades", href: "/funcionalidades" },
+                  { label: "Precios", href: "/pricing" },
+                  { label: "Contacto", href: "/contacto" },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`mobile-nav-link ${pathname === href ? "mobile-nav-link-active" : ""}`}>
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              {!user && (
+                <div className="flex items-center gap-3 mt-5">
+                  <button
+                    onClick={() => {
+                      setMobileOpen(false);
+                      router.push("/auth/sign-in");
+                    }}
+                    className="mobile-auth-btn-ghost">
+                    Iniciar sesión
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileOpen(false);
+                      router.push("/auth/sign-up");
+                    }}
+                    className="mobile-auth-btn-primary">
+                    Registrarse
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Spacer so content doesn't hide under fixed navbar (only on non-home pages) */}

@@ -139,17 +139,17 @@ export default function FuncionalidadesPage() {
               clientes.
             </p>
 
-            <div className="fn-au fn-d4 flex flex-col sm:flex-row items-center gap-3">
+            <div className="fn-au fn-d4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full max-w-xs sm:max-w-none">
               <Link
                 href="/auth/sign-up"
-                className="fn-btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-white"
+                className="fn-btn-primary inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-white w-full sm:w-auto"
                 style={{ background: "#27a0c9" }}>
                 Empezar gratis
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/pricing"
-                className="fn-btn-ghost inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-white/80"
+                className="fn-btn-ghost inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-white/80 w-full sm:w-auto"
                 style={{
                   background: "rgba(255,255,255,.07)",
                   border: "1px solid rgba(255,255,255,.14)",

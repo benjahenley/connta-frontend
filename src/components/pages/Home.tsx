@@ -272,31 +272,31 @@ export default function HomePage() {
               className="au d4 max-w-2xl text-lg md:text-xl mb-10 leading-relaxed"
               style={{ color: "rgba(255,255,255,0.68)" }}>
               Importá tu planilla, revisá, confirmás y ARCA emite los CAE en
-              lote. Pensado para estudios contables que ya no quieren trabajar
-              factura por factura.
+              lote. Pensado para estudios y personas que se hartaron de perder
+              horas.
             </p>
 
-            <div className="au d5 flex flex-col sm:flex-row gap-4 mb-14">
+            <div className="au d5 flex flex-col sm:flex-row gap-3 sm:gap-4 mb-14 w-full max-w-xs sm:max-w-none">
               {user ? (
-                <Link href="/dashboard">
+                <Link href="/dashboard" className="w-full sm:w-auto">
                   <button
-                    className="cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                    className="cta-btn w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg"
                     style={{ background: "#27a0c9" }}>
                     Ir al dashboard <ArrowRight className="h-5 w-5" />
                   </button>
                 </Link>
               ) : (
                 <>
-                  <Link href="/auth/sign-up">
+                  <Link href="/auth/sign-up" className="w-full sm:w-auto">
                     <button
-                      className="cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                      className="cta-btn w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg"
                       style={{ background: "#27a0c9" }}>
                       Empezar gratis <ArrowRight className="h-5 w-5" />
                     </button>
                   </Link>
-                  <Link href="/auth/sign-in">
+                  <Link href="/auth/sign-in" className="w-full sm:w-auto">
                     <button
-                      className="cursor-pointer px-8 py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200"
+                      className="cursor-pointer w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200"
                       style={{
                         background: "rgba(255,255,255,0.08)",
                         backdropFilter: "blur(8px)",
@@ -377,28 +377,28 @@ export default function HomePage() {
                 sin reingresar datos.
               </p>
 
-              <div className="au d5 mt-8 flex flex-col sm:flex-row gap-4">
+              <div className="au d5 mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none">
                 {user ? (
-                  <Link href="/dashboard">
+                  <Link href="/dashboard" className="w-full sm:w-auto">
                     <button
-                      className="cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                      className="cta-btn w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg"
                       style={{ background: "#27a0c9" }}>
                       Ir al dashboard <ArrowRight className="h-5 w-5" />
                     </button>
                   </Link>
                 ) : (
                   <>
-                    <Link href="/auth/sign-up">
+                    <Link href="/auth/sign-up" className="w-full sm:w-auto">
                       <button
-                        className="cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                        className="cta-btn w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg"
                         style={{ background: "#27a0c9" }}>
                         Probar con 5 facturas gratis{" "}
                         <ArrowRight className="h-5 w-5" />
                       </button>
                     </Link>
-                    <Link href="/funcionalidades">
+                    <Link href="/funcionalidades" className="w-full sm:w-auto">
                       <button
-                        className="cursor-pointer px-8 py-4 rounded-xl text-[#0f172a] font-semibold text-base border transition-all duration-200 hover:bg-slate-50"
+                        className="cursor-pointer w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[#0f172a] font-semibold text-base border transition-all duration-200 hover:bg-slate-50 flex items-center justify-center"
                         style={{
                           borderColor: "#d7e7ef",
                           background: "rgba(255,255,255,0.85)",
@@ -495,22 +495,22 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-            {stats.map((stat, i) => (
-              <div
-                key={i}
-                data-reveal
-                data-delay={i + 1}
-                className="px-2 text-center overflow-visible">
-                <div className="font-display text-4xl md:text-5xl font-bold leading-[1.12] number-grad mb-1">
-                  {stat.value}
-                </div>
+              {stats.map((stat, i) => (
                 <div
-                  className="text-sm font-medium"
-                  style={{ color: "#6b8fa8" }}>
-                  {stat.label}
+                  key={i}
+                  data-reveal
+                  data-delay={i + 1}
+                  className="px-2 text-center overflow-visible">
+                  <div className="font-display text-4xl md:text-5xl font-bold leading-[1.12] number-grad mb-1">
+                    {stat.value}
+                  </div>
+                  <div
+                    className="text-sm font-medium"
+                    style={{ color: "#6b8fa8" }}>
+                    {stat.label}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
             </div>
           </div>
         </section>
@@ -569,9 +569,7 @@ export default function HomePage() {
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {feature.title}
                   </h3>
-                  <p
-                    className="leading-relaxed"
-                    style={{ color: "#6b7280" }}>
+                  <p className="leading-relaxed" style={{ color: "#6b7280" }}>
                     {feature.description}
                   </p>
                 </div>
@@ -809,19 +807,19 @@ export default function HomePage() {
               facturas. Sin tarjeta de crédito requerida.
             </p>
             <div data-reveal data-delay="3">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xs sm:max-w-none mx-auto">
                 {user ? (
-                  <Link href="/dashboard">
+                  <Link href="/dashboard" className="w-full sm:w-auto">
                     <button
-                      className="cta-btn cta-glow px-10 py-5 text-white font-bold text-lg rounded-xl flex items-center gap-3"
+                      className="cta-btn cta-glow w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 text-white font-bold text-base sm:text-lg rounded-xl flex items-center justify-center gap-3"
                       style={{ background: "#27a0c9" }}>
                       Ir al dashboard <ArrowRight className="h-6 w-6" />
                     </button>
                   </Link>
                 ) : (
-                  <Link href="/auth/sign-up">
+                  <Link href="/auth/sign-up" className="w-full sm:w-auto">
                     <button
-                      className="cta-btn cta-glow px-10 py-5 text-white font-bold text-lg rounded-xl flex items-center gap-3"
+                      className="cta-btn cta-glow w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 text-white font-bold text-base sm:text-lg rounded-xl flex items-center justify-center gap-3"
                       style={{ background: "#27a0c9" }}>
                       Crear cuenta gratuita <ArrowRight className="h-6 w-6" />
                     </button>
@@ -832,7 +830,7 @@ export default function HomePage() {
                   href="https://wa.me/5491527398316?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20demo%20de%20Connta"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cta-btn px-8 py-5 font-semibold text-base rounded-xl flex items-center gap-2.5 border"
+                  className="cta-btn w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-5 font-semibold text-base rounded-xl flex items-center justify-center gap-2.5 border"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     borderColor: "rgba(125,211,252,0.25)",

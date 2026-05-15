@@ -548,10 +548,10 @@ export default function ContactoPage() {
             <div
               data-reveal
               data-delay="2"
-              className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/sign-up">
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-xs sm:max-w-none mx-auto">
+              <Link href="/auth/sign-up" className="w-full sm:w-auto">
                 <button
-                  className="ct-cta-btn px-8 py-4 rounded-xl text-white font-semibold text-base flex items-center gap-2 shadow-lg"
+                  className="ct-cta-btn w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg"
                   style={{ background: "#27a0c9" }}>
                   Crear cuenta gratuita <ArrowRight className="h-5 w-5" />
                 </button>
@@ -559,9 +559,10 @@ export default function ContactoPage() {
               <a
                 href="https://wa.me/5491527398316"
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto">
                 <button
-                  className="px-8 py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-semibold text-base border border-white/20 hover:bg-white/10 transition-all duration-200 flex items-center justify-center"
                   style={{
                     background: "rgba(255,255,255,0.08)",
                     backdropFilter: "blur(8px)",
