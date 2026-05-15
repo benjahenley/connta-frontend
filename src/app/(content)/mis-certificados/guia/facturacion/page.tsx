@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { GuideTOC } from "@/components/mis-certificados/GuideTOC";
 import {
   Receipt,
   ArrowRight,
@@ -144,7 +145,7 @@ export default function GuiaFacturacion() {
           </div>
         </header>
 
-        <div className="max-w-7xl mx-auto px-6 md:px-8 xl:grid xl:grid-cols-[minmax(0,1fr)_240px] xl:gap-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 xl:grid xl:grid-cols-[minmax(0,1fr)_240px] xl:gap-12 2xl:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 max-w-5xl py-10 space-y-14">
 
             {/* ── Requisitos ─────────────────────────────────── */}
@@ -710,56 +711,11 @@ export default function GuiaFacturacion() {
           </div>
 
           {/* ── Sticky sidebar ────────────────────────────────── */}
-          <aside className="hidden xl:block py-10">
-            <div className="sticky top-28 rounded-2xl border border-gray-200 bg-white/88 px-5 py-5 backdrop-blur">
-              <p className="g-sora text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
-                En esta guía
-              </p>
-              <nav className="mt-4 space-y-1.5">
-                {SECTIONS.map((section, index) => {
-                  const isActive = section.id === activeSection;
-                  return (
-                    <a
-                      key={section.id}
-                      href={`#${section.id}`}
-                      onClick={() => handleNavClick(section.id)}
-                      className="group flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors"
-                      style={{
-                        background: isActive
-                          ? "rgba(39,160,201,.08)"
-                          : "transparent",
-                      }}>
-                      <span
-                        className="g-condensed text-lg leading-none"
-                        style={{ color: isActive ? "#27a0c9" : "#cbd5e1" }}>
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span
-                        className="g-sora text-sm leading-snug transition-colors"
-                        style={{ color: isActive ? "#0f172a" : "#64748b" }}>
-                        {section.label}
-                      </span>
-                    </a>
-                  );
-                })}
-              </nav>
-
-              <div
-                className="mt-6 pt-5"
-                style={{ borderTop: "1px solid #f1f5f9" }}>
-                <p className="g-sora text-xs text-gray-400 mb-3">
-                  ¿Problemas con el certificado?
-                </p>
-                <Link
-                  href="/mis-certificados/guia"
-                  className="g-sora inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
-                  style={{ color: "#27a0c9" }}>
-                  Ver todas las guías
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-            </div>
-          </aside>
+          <GuideTOC
+            sections={SECTIONS}
+            activeSection={activeSection}
+            onSectionClick={handleNavClick}
+          />
         </div>
       </div>
 

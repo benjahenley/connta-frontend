@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { GuideTOC } from "@/components/mis-certificados/GuideTOC";
 import {
   FileText,
   Info,
@@ -477,34 +478,11 @@ export default function GuiaComprobantesEmitidos() {
             </div>
           </div>
 
-          <aside className="hidden xl:block py-10">
-            <div className="sticky top-28 rounded-2xl border border-gray-200 bg-white/88 px-5 py-5 backdrop-blur">
-              <p className="g-sora text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
-                En esta guía
-              </p>
-              <nav className="mt-4 space-y-1.5">
-                {SECTIONS.map((section, index) => {
-                  const isActive = section.id === activeSection;
-
-                  return (
-                    <a
-                      key={section.id}
-                      href={`#${section.id}`}
-                      data-active={isActive}
-                      onClick={() => setActiveSection(section.id)}
-                      className="g-nav-item flex items-start gap-3 rounded-xl px-3 py-2.5">
-                      <span className="g-condensed g-nav-num text-lg leading-none">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span className="g-sora g-nav-label text-sm leading-snug">
-                        {section.label}
-                      </span>
-                    </a>
-                  );
-                })}
-              </nav>
-            </div>
-          </aside>
+          <GuideTOC
+            sections={SECTIONS}
+            activeSection={activeSection}
+            onSectionClick={setActiveSection}
+          />
         </div>
       </div>
     </>
