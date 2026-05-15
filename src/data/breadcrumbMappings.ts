@@ -9,6 +9,10 @@ interface BreadcrumbMappings {
 
 export const breadcrumbMappings: BreadcrumbMappings = {
   "/dashboard": [{ url: "/dashboard", title: "Dashboard" }],
+  "/perfil": [
+    { url: "/dashboard", title: "Dashboard" },
+    { url: "/perfil", title: "Perfil" },
+  ],
   "/mis-certificados": [
     { url: "/dashboard", title: "Dashboard" },
     { url: "/mis-certificados", title: "Mis Certificados" },

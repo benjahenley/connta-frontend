@@ -78,6 +78,38 @@ class AuthService {
     afipApi.clearCache();
   }
 
+  // Permanently delete the current account
+  async deleteAccount(confirmation: string): Promise<{ message: string }> {
+    const token = await this.getToken();
+    if (!token) throw new Error("No autenticado");
+
+    const apiUrl = getApiBaseUrl();
+    if (!apiUrl) throw new Error("La URL de la API no esta configurada");
+
+    const res = await fetch(`${apiUrl}/auth/me`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ confirmation }),
+    });
+
+    if (!res.ok) {
+      let message = "No se pudo eliminar la cuenta";
+      try {
+        const err = await res.json();
+        if (err?.message) message = err.message;
+      } catch {}
+      throw new Error(message);
+    }
+
+    await supabase.auth.signOut().catch(() => {});
+    afipApi.clearCache();
+
+    return res.json();
+  }
+
   // Get current user (merges Supabase auth + backend subscription data)
   async getCurrentUser(): Promise<AuthUser | null> {
     try {

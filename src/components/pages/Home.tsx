@@ -276,7 +276,7 @@ export default function HomePage() {
               horas.
             </p>
 
-            <div className="au d5 flex flex-col sm:flex-row gap-3 sm:gap-4 mb-14 w-full max-w-xs sm:max-w-none">
+            <div className="au d5 flex flex-col items-center sm:flex-row sm:justify-center gap-3 sm:gap-4 mb-14 w-full max-w-xs sm:max-w-none">
               {user ? (
                 <Link href="/dashboard" className="w-full sm:w-auto">
                   <button

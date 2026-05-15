@@ -1,5 +1,5 @@
 import { MdDashboard } from "react-icons/md";
-import { Shield, BookOpen, Receipt, Crown } from "lucide-react";
+import { Shield, BookOpen, Receipt, Crown, User } from "lucide-react";
 
 export const sidebarItems = [
   {
@@ -24,6 +24,12 @@ export const sidebarItems = [
     name: "Facturación",
     href: "/facturacion",
     icon: <Receipt size={20} />,
+    requireAuth: true,
+  },
+  {
+    name: "Perfil",
+    href: "/perfil",
+    icon: <User size={20} />,
     requireAuth: true,
   },
   {

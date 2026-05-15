@@ -118,12 +118,10 @@ export default function FooterPublic() {
             <p
               className="text-sm leading-relaxed max-w-xs"
               style={{ color: "#94a8b6" }}>
-              Facturación ARCA en lote para estudios contables. Importá tu
-              planilla, revisá y emitís CAEs sin reingresar datos.
+              Automatizaciones modernas para estudios contables y personas que
+              buscan competitividad.
             </p>
-            <div
-              className="ft-contact mt-5"
-              style={{ cursor: "default" }}>
+            <div className="ft-contact mt-5" style={{ cursor: "default" }}>
               <span className="ft-icon">
                 <MapPin size={14} />
               </span>
