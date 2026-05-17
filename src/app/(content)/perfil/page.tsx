@@ -54,12 +54,15 @@ export default function PerfilPage() {
       await authService.deleteAccount(CONFIRMATION_PHRASE);
       router.push("/");
     } catch (e) {
-      setDeleteError(e instanceof Error ? e.message : "No se pudo eliminar la cuenta");
+      setDeleteError(
+        e instanceof Error ? e.message : "No se pudo eliminar la cuenta",
+      );
       setDeleting(false);
     }
   };
 
-  const tierName = SUBSCRIPTION_TIERS[user?.subscriptionTier || SubscriptionTier.FREE].name;
+  const tierName =
+    SUBSCRIPTION_TIERS[user?.subscriptionTier || SubscriptionTier.FREE].name;
   const initials =
     user?.name
       ?.split(" ")
@@ -91,13 +94,20 @@ export default function PerfilPage() {
             <p className="text-base font-semibold text-gray-900 truncate">
               {user?.name || "Usuario"}
             </p>
-            <p className="text-sm text-gray-500 truncate">{user?.email || "—"}</p>
+            <p className="text-sm text-gray-500 truncate">
+              {user?.email || "—"}
+            </p>
           </div>
         </div>
 
         <dl className="divide-y divide-gray-100">
           <InfoRow icon={Mail} label="Email" value={user?.email || "—"} />
-          <InfoRow icon={Hash} label="CUIT" value={formatCuit(user?.cuit)} mono />
+          <InfoRow
+            icon={Hash}
+            label="CUIT"
+            value={formatCuit(user?.cuit)}
+            mono
+          />
           <InfoRow icon={Crown} label="Plan" value={tierName} />
         </dl>
       </div>
@@ -127,7 +137,9 @@ export default function PerfilPage() {
       <div
         className="mt-6 rounded-2xl overflow-hidden border"
         style={{ borderColor: "#fecaca", background: "#fff7f7" }}>
-        <div className="px-5 py-4 sm:px-6 sm:py-5 border-b" style={{ borderColor: "#fecaca" }}>
+        <div
+          className="px-5 py-4 sm:px-6 sm:py-5 border-b"
+          style={{ borderColor: "#fecaca" }}>
           <div className="flex items-start gap-3">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -139,9 +151,9 @@ export default function PerfilPage() {
                 Zona peligrosa
               </p>
               <p className="text-xs mt-0.5" style={{ color: "#7f1d1d" }}>
-                Eliminar tu cuenta borra permanentemente tus certificados, facturas,
-                historial y configuración. Esta acción es irreversible y el CUIT no
-                podrá usarse nuevamente para crear otra cuenta.
+                Eliminar tu cuenta borra permanentemente tus certificados,
+                facturas, historial y configuración. Esta acción es
+                irreversible.
               </p>
             </div>
           </div>
@@ -202,7 +214,9 @@ function InfoRow({ icon: Icon, label, value, mono }: InfoRowProps) {
     <div className="px-5 sm:px-6 py-3.5 flex items-center justify-between gap-4">
       <div className="flex items-center gap-2 text-gray-500">
         <Icon size={14} className="text-gray-400" />
-        <span className="text-xs uppercase tracking-wider font-medium">{label}</span>
+        <span className="text-xs uppercase tracking-wider font-medium">
+          {label}
+        </span>
       </div>
       <span
         className={`text-sm text-gray-800 truncate ${mono ? "font-mono" : "font-medium"}`}>
