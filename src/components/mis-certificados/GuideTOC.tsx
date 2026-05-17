@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-export interface GuideTOCSection {
-  id: string;
+export interface GuideTOCSection<TId extends string = string> {
+  id: TId;
   label: string;
 }
 
-interface GuideTOCProps {
-  sections: GuideTOCSection[];
-  activeSection: string;
-  onSectionClick?: (id: string) => void;
+interface GuideTOCProps<TId extends string> {
+  sections: readonly GuideTOCSection<TId>[];
+  activeSection: TId;
+  onSectionClick?: (id: TId) => void;
   className?: string;
 }
 
@@ -20,12 +20,12 @@ const CONDENSED_FAMILY =
   "var(--font-condensed), ui-sans-serif, system-ui, sans-serif";
 const ACCENT = "#27a0c9";
 
-export function GuideTOC({
+export function GuideTOC<TId extends string>({
   sections,
   activeSection,
   onSectionClick,
   className = "",
-}: GuideTOCProps) {
+}: GuideTOCProps<TId>) {
   return (
     <aside className={`hidden xl:block py-10 ${className}`}>
       <div
